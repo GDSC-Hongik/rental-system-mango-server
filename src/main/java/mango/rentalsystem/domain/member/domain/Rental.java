@@ -1,4 +1,4 @@
-package mango.rentalsystem.domain;
+package mango.rentalsystem.domain.member.domain;
 
 public class Rental {
 }

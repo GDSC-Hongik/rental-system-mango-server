@@ -1,42 +1,44 @@
-package mango.rentalsystem.domain;
-
+package mango.rentalsystem.domain.member.domain;
 
 import jakarta.persistence.*;
 
-import java.util.LinkedList;
-import java.util.Date;
+import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
+import lombok.Getter;
+import lombok.Setter;
+
 @Entity
+@Getter
+@Setter
 public class Member {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "member_id")
-    private Long id;
+	@Id
+	@GeneratedValue
+	@Column(name = "member_id")
+	private Long id;
 
-    private String studentId;
+	private String studentId;
 
-    private String password;
+	private String password;
 
-    private String name;
+	private String name;
 
-    private MemberRole role;
+	private MemberRole role;
 
-    @ManyToOne
-    @JoinColumn(name = "department")
-    private Department department;
+	@ManyToOne
+	@JoinColumn(name = "department")
+	private Department department;
 
-    private String phone;
+	private String phone;
 
-    private String pictureUrl;
+	private String pictureUrl;
 
-    private List<Rental> rentalList = new LinkedList<>();
+	@OneToMany(mappedBy = "member")
+	private List<Rental> rentalList = new ArrayList<>();
 
-    private boolean absenceStatus;
+	private boolean absenceStatus;
 
-    private Date rentalUnavailableDate;
-
-
-
+	private LocalDateTime rentalUnavailableDate;
 }
