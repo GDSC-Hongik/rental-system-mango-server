@@ -1,5 +1,6 @@
 package mango.rentalsystem.domain.item.domain;
 
+public class Item {
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

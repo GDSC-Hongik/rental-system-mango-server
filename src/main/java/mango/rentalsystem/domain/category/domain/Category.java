@@ -20,6 +20,7 @@ public class Category {
 	private String name;
 
 	private String description;
+	// description: 22년형 macbook air 14인치
 
 	@ManyToOne
 	@JoinColumn(name = "department")
