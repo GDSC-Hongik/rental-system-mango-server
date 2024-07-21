@@ -1,5 +1,7 @@
 package mango.rentalsystem.domain.member.domain;
 
+import static jakarta.persistence.FetchType.*;
+
 import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
@@ -27,7 +29,7 @@ public class Member {
 
 	private MemberRole role;
 
-	@ManyToOne
+	@ManyToOne(fetch = LAZY)
 	@JoinColumn(name = "department")
 	private Department department;
 
