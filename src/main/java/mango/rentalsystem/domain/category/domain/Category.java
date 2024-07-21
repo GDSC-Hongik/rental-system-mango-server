@@ -22,10 +22,10 @@ public class Category {
 	private String description;
 	// description: 22년형 macbook air 14인치
 
-	@ManyToOne
-	@JoinColumn(name = "department")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "department_id")
 	private Department department;
 
-	@OneToMany(mappedBy = "Item")
+	@OneToMany(mappedBy = "item")
 	private List<Item> items = new ArrayList<>();
 }

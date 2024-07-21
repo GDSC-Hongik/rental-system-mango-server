@@ -14,23 +14,25 @@ import mango.rentalsystem.domain.member.domain.Member;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Rental {
 
-    @Id
-    @GeneratedValue
-    @Column(name = "rental_id")
-    private Long id; //pk
+	@Id
+	@GeneratedValue
+	@Column(name = "rental_id")
+	private Long id; //pk
 
-    @JoinColumn(name = "member_id") //fk
-    private Member member;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "member_id") //fk
+	private Member member;
 
-    @JoinColumn(name = "item_id") //fk
-    private Item item;
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "item_id") //fk
+	private Item item;
 
-    @Enumerated(EnumType.STRING)
-    private RentalStatus rentalStatus;
+	@Enumerated(EnumType.STRING)
+	private RentalStatus rentalStatus;
 
-    private LocalDateTime borrowDateTime;
+	private LocalDateTime borrowDateTime;
 
-    private LocalDateTime returnDateTime;
+	private LocalDateTime returnDateTime;
 
-    private int rentalReview;
+	private int rentalReview;
 }

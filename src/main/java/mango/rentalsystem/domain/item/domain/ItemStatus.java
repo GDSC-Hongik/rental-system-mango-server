@@ -1,6 +1,15 @@
 package mango.rentalsystem.domain.item.domain;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
+@Getter
+@AllArgsConstructor
 public enum ItemStatus {
-	IDLE, BOOK, BORROW, OVERDUE
-	// 대기, 예약, 대여완료, 연체
+	IDLE("대기"),
+	BOOK("예약"),
+	BORROW("대여 중"),
+	OVERDUE("연체 중");
+
+	private final String message;
 }

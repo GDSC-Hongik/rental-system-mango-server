@@ -1,10 +1,10 @@
 package mango.rentalsystem.domain.rental.domain;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
-@RequiredArgsConstructor
 @Getter
+@AllArgsConstructor
 public enum RentalStatus {
 
 	//대여 요청 후

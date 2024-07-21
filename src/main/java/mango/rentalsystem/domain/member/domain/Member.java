@@ -1,19 +1,17 @@
 package mango.rentalsystem.domain.member.domain;
 
-import static jakarta.persistence.FetchType.*;
-
 import jakarta.persistence.*;
 
-import java.time.LocalDateTime;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 import lombok.Getter;
-import lombok.Setter;
+import mango.rentalsystem.domain.department.domain.Department;
+import mango.rentalsystem.domain.rental.domain.Rental;
 
 @Entity
 @Getter
-@Setter
 public class Member {
 
 	@Id
@@ -27,20 +25,21 @@ public class Member {
 
 	private String name;
 
+	@Enumerated(EnumType.STRING)
 	private MemberRole role;
 
-	@ManyToOne(fetch = LAZY)
-	@JoinColumn(name = "department")
+	@ManyToOne(fetch = FetchType.LAZY)
+	@JoinColumn(name = "department_id")
 	private Department department;
 
 	private String phone;
 
 	private String pictureUrl;
 
-	@OneToMany(mappedBy = "member")
-	private List<Rental> rentalList = new ArrayList<>();
-
 	private boolean absenceStatus;
 
-	private LocalDateTime rentalUnavailableDate;
+	@OneToMany(mappedBy = "rental")
+	private List<Rental> rentalList = new ArrayList<>();
+
+	private LocalDate rentalBannedDate;
 }

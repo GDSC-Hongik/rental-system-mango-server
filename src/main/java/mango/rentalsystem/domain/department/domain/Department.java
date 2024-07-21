@@ -2,6 +2,7 @@ package mango.rentalsystem.domain.department.domain;
 
 import java.time.DayOfWeek;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import jakarta.persistence.CollectionTable;
@@ -14,7 +15,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.MapKeyEnumerated;
+import jakarta.persistence.OneToMany;
 import lombok.Getter;
+import mango.rentalsystem.domain.category.domain.Category;
+import mango.rentalsystem.domain.member.domain.Member;
 
 @Entity
 @Getter
@@ -36,4 +40,10 @@ public class Department {
 	private String place;
 
 	private String notice;
+
+	@OneToMany(mappedBy = "department")
+	private List<Member> members;
+
+	@OneToMany(mappedBy = "category")
+	private List<Category> categories;
 }
