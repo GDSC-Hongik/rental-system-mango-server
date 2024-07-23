@@ -26,6 +26,6 @@ public class Category {
 	@JoinColumn(name = "department_id")
 	private Department department;
 
-	@OneToMany(mappedBy = "item")
+	@OneToMany(mappedBy = "category")
 	private List<Item> items = new ArrayList<>();
 }

@@ -38,7 +38,7 @@ public class Member {
 
 	private boolean absenceStatus;
 
-	@OneToMany(mappedBy = "rental")
+	@OneToMany(mappedBy = "member")
 	private List<Rental> rentalList = new ArrayList<>();
 
 	private LocalDate rentalBannedDate;

@@ -44,6 +44,6 @@ public class Department {
 	@OneToMany(mappedBy = "department")
 	private List<Member> members;
 
-	@OneToMany(mappedBy = "category")
+	@OneToMany(mappedBy = "department")
 	private List<Category> categories;
 }
