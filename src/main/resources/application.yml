@@ -1,0 +1,30 @@
+spring:
+  datasource: # Test용 h2 데이터베이스. MySQL로 전환 예정
+    url: jdbc:h2:tcp://localhost/~/jwttest
+    username: sa
+    password:
+    driver-class-name: org.h2.Driver
+
+  jpa:
+    hibernate:
+      ddl-auto: create
+    properties:
+      hibernate:
+        # show_sql: true
+        format_sql: true
+
+jwt:
+  secret-key: ${SECRET_KEY:VlwEyVBsYt9V7zq57TejMnVUyzblYcfPQye08f7MGVA9XkHa}
+  #  access-token-exp_time: ${JWT_ACCESS_TOKEN_EXP_TIME:3600} # 1시간
+  #  refresh-token-exp-time: ${JWT_ACCESS_TOKEN_EXP_TIME:86400} # 1일
+  access-token-exp_time: ${JWT_ACCESS_TOKEN_EXP_TIME:60} # Test용 1분
+  refresh-token-exp-time: ${JWT_ACCESS_TOKEN_EXP_TIME:120} # Test용 2분
+
+redis:
+  host: localhostg
+  port: 6379
+
+logging:
+  level:
+    org.hibernate.SQL: debug
+    org.hibernate.orm.jdbc.bind: trace
