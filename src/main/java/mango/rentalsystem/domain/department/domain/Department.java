@@ -41,8 +41,10 @@ public class Department {
 
 	private String notice;
 
-	@OneToMany(mappedBy = "department")
-	private List<Member> members;
+
+	//member test용으로 제외
+	/*@OneToMany(mappedBy = "department")
+	private List<Member> members;*/
 
 	@OneToMany(mappedBy = "department")
 	private List<Category> categories;
