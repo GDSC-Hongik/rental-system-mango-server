@@ -6,7 +6,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import jakarta.transaction.Transactional;
+
 import mango.rentalsystem.domain.member.dao.MemberRepository;
 import mango.rentalsystem.domain.member.domain.Member;
 import mango.rentalsystem.domain.member.utils.CsvUtil;
