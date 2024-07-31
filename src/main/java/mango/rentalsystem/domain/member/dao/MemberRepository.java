@@ -7,9 +7,10 @@ import org.springframework.stereotype.Repository;
 
 import mango.rentalsystem.domain.member.domain.Member;
 
-@Repository
+
 public interface MemberRepository extends JpaRepository<Member, Long> {
 
 	Optional<Member> findByStudentId(String studentId);
 
 }
+
