@@ -1,5 +1,7 @@
 package mango.rentalsystem.domain.auth.application;
 
+import java.util.Optional;
+
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -28,10 +30,9 @@ public class AuthService {
 		final String studentId = request.studentId();
 		final String password = request.password();
 
-		Member member = memberRepository.findByStudentId(studentId);
-		if (member == null) {
-			throw new UsernameNotFoundException("학번이 존재하지 않습니다.");
-		}
+		Member member = memberRepository.findByStudentId(studentId)
+			.orElseThrow(() -> new UsernameNotFoundException("학번이 존재하지 않습니다."));
+
 		if (!passwordEncoder.matches(password, member.getPassword())) {
 			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
 		}
@@ -50,7 +51,8 @@ public class AuthService {
 			String studentId = jwtTokenProvider.parseToken(token).getSubject();
 			if (redisTemplate.hasKey(studentId)) {
 				redisTemplate.delete(studentId);
-				Member member = memberRepository.findByStudentId(studentId);
+				Optional<Member> optionalMember = memberRepository.findByStudentId(studentId);
+				Member member = optionalMember.orElseThrow(() -> new BadCredentialsException("유효하지 않은 사용자입니다."));
 
 				String accessToken = jwtTokenProvider.createAccessToken(studentId, member.getRole());
 				refreshToken = jwtTokenProvider.createRefreshToken(studentId);
