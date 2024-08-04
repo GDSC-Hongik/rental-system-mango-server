@@ -34,7 +34,7 @@ public class Member {
 
 	@Enumerated(EnumType.STRING)
 	@Builder.Default
-	private MemberRole role = MemberRole.MEMBER;
+	private MemberRole role = MemberRole.ROLE_MEMBER;
 
 
 	@ManyToOne(fetch = FetchType.LAZY)
