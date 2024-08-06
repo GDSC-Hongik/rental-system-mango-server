@@ -1,7 +1,8 @@
 package mango.rentalsystem.domain.department.dao;
 
-import org.springframework.stereotype.Repository;
+import org.springframework.data.jpa.repository.JpaRepository;
 
-@Repository
-public class DepartmentRepository {
+import mango.rentalsystem.domain.department.domain.Department;
+
+public interface DepartmentRepository extends JpaRepository<Department, Long> {
 }
