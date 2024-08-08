@@ -1,6 +1,7 @@
 package mango.rentalsystem.domain.department.domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -62,5 +63,9 @@ public class Department {
 
 	public void updateWeeklyRentalTime(Map<DayOfWeek, DailyRentalTime> weeklyRentalTime) {
 		this.weeklyRentalTime = weeklyRentalTime;
+	}
+
+	public DailyRentalTime getTodayRentalTime() {
+		return this.weeklyRentalTime.get(LocalDate.now().getDayOfWeek());
 	}
 }
