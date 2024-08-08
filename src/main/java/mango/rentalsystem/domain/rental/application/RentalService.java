@@ -32,17 +32,17 @@ public class RentalService {
 		Member member = memberRepository.findByStudentId(studentId)
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
 
-		DailyRentalTime todayRentalTime = member.getDepartment()
-			.getWeeklyRentalTime()
-			.get(LocalDate.now().getDayOfWeek());
+		DailyRentalTime todayRentalTime = member.getDepartment().getTodayRentalTime();
 
 		if (LocalTime.now().isBefore(todayRentalTime.getRentalStartTime()) &&
 			LocalTime.now().isAfter(todayRentalTime.getRentalEndTime())) {
 			throw new RuntimeException("대여 가능 시간이 아닙니다.");
-		}
+		} // 검증 편의 메서드 Department에 추가 예정
 
 		Item item = itemRepository.findById(request.itemId())
 			.orElseThrow(() -> new RuntimeException("존재하지 않는 물품입니다."));
+
+		// itemStatus가 IDLE인지 확인하는 메서드
 
 		Rental rental = Rental.createInitialRental(member, item);
 		Rental savedRental = rentalRepository.save(rental);
@@ -60,43 +60,31 @@ public class RentalService {
 		switch (currentStatus) {
 			case APPROVAL_REQUESTED -> {
 				switch (requestStatus) {
-					case APPROVED -> {
-					}
-					case REJECTED -> {
-					}
-					case CANCELED -> {
-					}
-					default -> {
-					}
+					case CANCELED -> rental.updateRentalStatusToCanceled();
+					case APPROVED -> rental.updateRentalStatusToApproved();
+					case REJECTED -> rental.updateRentalStatusToRejected();
+					default -> throw new IllegalStateException(currentStatus.name() + requestStatus.name());
 				}
 			}
 			case APPROVED -> {
 				switch (requestStatus) {
-					case BORROW -> {
-					}
-					default -> {
-					}
+					case BORROW -> rental.updateRentalStatusToBorrow();
+					default -> throw new IllegalStateException(currentStatus.name() + requestStatus.name());
 				}
 			}
 			case BORROW, OVERDUE -> {
 				switch (requestStatus) {
-					case RETURN_REQUESTED -> {
-					}
-					default -> {
-					}
+					case RETURN_REQUESTED -> rental.updateRentalStatusToReturnRequested();
+					default -> throw new IllegalStateException(currentStatus.name() + requestStatus.name());
 				}
 			}
 			case RETURN_REQUESTED -> {
 				switch (requestStatus) {
-					case RETURN -> {
-						rental.updateRentalStatus;
-					}
-					default -> {
-					}
+					case RETURN -> rental.updateRentalStatusToReturn();
+					default -> throw new IllegalStateException(currentStatus.name() + requestStatus.name());
 				}
 			}
-			default -> {
-			}
+			default -> throw new IllegalStateException(currentStatus.name() + requestStatus.name());
 		}
 	}
 
