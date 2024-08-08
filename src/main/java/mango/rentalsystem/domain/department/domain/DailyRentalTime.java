@@ -1,6 +1,5 @@
 package mango.rentalsystem.domain.department.domain;
 
-import java.time.Duration;
 import java.time.LocalTime;
 
 import jakarta.persistence.Embeddable;
@@ -25,7 +24,8 @@ public class DailyRentalTime {
 	private LocalTime rentalDeadLineTime;
 
 	@Builder(access = AccessLevel.PRIVATE)
-	private DailyRentalTime(LocalTime rentalStartTime, LocalTime rentalEndTime, int rentalDeadLineDate, LocalTime rentalDeadLineTime) {
+	private DailyRentalTime(LocalTime rentalStartTime, LocalTime rentalEndTime, int rentalDeadLineDate,
+		LocalTime rentalDeadLineTime) {
 		this.rentalStartTime = rentalStartTime;
 		this.rentalEndTime = rentalEndTime;
 		this.rentalDeadLineDate = rentalDeadLineDate;
