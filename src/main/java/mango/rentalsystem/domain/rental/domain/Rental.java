@@ -41,11 +41,12 @@ public class Rental {
 
 	private LocalDateTime deadlineDateTime;
 
-	private int rentalReview;
+	private Integer rentalReview;
 
 	@Builder(access = AccessLevel.PRIVATE)
 	private Rental(Member member, Item item, RentalStatus rentalStatus, LocalDateTime requestDateTime,
-		LocalDateTime borrowDateTime, LocalDateTime returnDateTime, LocalDateTime deadlineDateTime, int rentalReview) {
+		LocalDateTime borrowDateTime, LocalDateTime returnDateTime, LocalDateTime deadlineDateTime,
+		Integer rentalReview) {
 		this.member = member;
 		this.item = item;
 		this.rentalStatus = rentalStatus;
@@ -93,6 +94,12 @@ public class Rental {
 		// itemStatus BORROW 으로 만드는 로직
 	}
 
+	public void updateRentalStatusToOverdue() {
+		this.rentalStatus = RentalStatus.OVERDUE;
+		// member rentalBannedDate 설정 로직
+		// BannedDate 언제까지인지, 연장 필요한지 논의 필요
+	}
+
 	public void updateRentalStatusToReturnRequested() {
 		this.rentalStatus = RentalStatus.RETURN_REQUESTED;
 	}
@@ -101,5 +108,10 @@ public class Rental {
 		this.rentalStatus = RentalStatus.RETURN;
 		this.returnDateTime = LocalDateTime.now();
 		// itemStatus IDLE 으로 만드는 로직
+	}
+
+	public void updateRentalReview(Integer rentalReview) {
+		this.rentalReview = rentalReview;
+		// item averageReview 수정 로직
 	}
 }
