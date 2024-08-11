@@ -13,8 +13,9 @@ import mango.rentalsystem.domain.rental.domain.RentalStatus;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = RentalStatusSubsetValidator.class)
 public @interface RentalStatusSubset {
-	RentalStatus[] anyOf();
-	String message() default "{anyOf} 중 하나의 상태여야 합니다.";
+	RentalStatus[] memberAvailableStatus();
+	RentalStatus[] adminAvailableStatus();
+	String message() default "{memberAvailableStatus} 또는 {adminAvailableStatus} 중 하나의 상태여야 합니다.";
 	Class<?>[] groups() default {};
 	Class<? extends Payload>[] payload() default {};
 }
