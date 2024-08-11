@@ -27,13 +27,13 @@ public class Category {
 	@Column(unique = true)
 	private String name;
 
-	private String description;
-	// description: 22년형 macbook air 14인치
-
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id")
 	@NotNull
 	private Department department;
+
+	private String description;
+	// description: 22년형 macbook air 14인치
 
 	@OneToMany(mappedBy = "category")
 	private List<Item> items = new ArrayList<>();
@@ -47,5 +47,13 @@ public class Category {
 		this.name = name;
 		this.description = description;
 		this.department = department;
+	}
+
+	public static Category create(String name, Department department, String description) {
+		return Category.builder()
+			.name(name)
+			.department(department)
+			.description(description)
+			.build();
 	}
 }
