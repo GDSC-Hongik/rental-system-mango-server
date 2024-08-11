@@ -18,6 +18,7 @@ import mango.rentalsystem.domain.category.application.CategoryService;
 import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.response.CategoryDetailResponse;
 import mango.rentalsystem.domain.category.dto.response.CategoryResponse;
+import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
 
 @RestController
 @RequestMapping("/category")
@@ -28,8 +29,8 @@ public class CategoryController {
 
 	// 카테고리 전체 조회
 	@GetMapping
-	public ResponseEntity<List<CategoryResponse>> getAllCategories() {
-		List<CategoryResponse> response = categoryService.findAll();
+	public ResponseEntity<List<CategorySummaryResponse>> getAllCategories() {
+		List<CategorySummaryResponse> response = categoryService.findAll();
 		return ResponseEntity.ok().body(response);
 	}
 
@@ -42,11 +43,13 @@ public class CategoryController {
 	}
 
 	// 특정 카테고리 정보 조회
+	/*
 	@GetMapping("/{categoryId}")
-	public ResponseEntity<CategoryDetailResponse>getCategoryById(@PathVariable Long categoryId) {
+	public ResponseEntity<List<CategoryDetailResponse>>getCategoryById(@PathVariable Long categoryId) {
 		CategoryDetailResponse response = categoryService.findCategoryById(categoryId);
 		return ResponseEntity.ok(response);
 	}
+	*/
 
 	// 특정 카테고리 삭제
 	@PreAuthorize("hasRole('ADMIN')")	// ADMIN 검사

@@ -48,4 +48,12 @@ public class Department {
 
 	@OneToMany(mappedBy = "department")
 	private List<Category> categories;
+
+	// Department 생성 메서드
+	public static Department createDepartment(String name, Map<DayOfWeek, DailyRentalTime> weeklyRentalTime) {
+		Department department = new Department();
+		department.name = name;
+		department.weeklyRentalTime = weeklyRentalTime;
+		return department;
+	}
 }

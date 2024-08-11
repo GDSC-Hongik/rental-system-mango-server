@@ -1,25 +1,23 @@
 package mango.rentalsystem.domain.category.dto.response;
 
+import java.util.ArrayList;
 import java.util.List;
 
-import mango.rentalsystem.domain.category.domain.Category;
-import mango.rentalsystem.domain.department.domain.Department;
-import mango.rentalsystem.domain.item.domain.Item;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
-public record CategoryDetailResponse(
-	Long categoryId,
-	String name,
-	String description,
-	Department department,
-	List<Item> items
-) {
-	public static CategoryDetailResponse of(Category category) {
-		return new CategoryDetailResponse(
-			category.getId(),
-			category.getName(),
-			category.getDescription(),
-			category.getDepartment(),
-			category.getItems()
-		);
+@Data
+@NoArgsConstructor
+public class CategoryDetailResponse {
+	private Long categoryId;
+	private String name;
+	private	String description;
+	private Long departmentId;
+
+	public CategoryDetailResponse(Long categoryId, String name, String description, Long departmentId) {
+		this.categoryId = categoryId;
+		this.name = name;
+		this.description = description;
+		this.departmentId = departmentId;
 	}
 }

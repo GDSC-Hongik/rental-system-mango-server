@@ -14,13 +14,10 @@ import lombok.extern.slf4j.Slf4j;
 import mango.rentalsystem.domain.category.dao.CategoryRepository;
 import mango.rentalsystem.domain.category.domain.Category;
 import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
-import mango.rentalsystem.domain.category.dto.response.CategoryDetailResponse;
-import mango.rentalsystem.domain.category.dto.response.CategoryResponse;
+import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
 import mango.rentalsystem.domain.department.dao.DepartmentRepository;
 import mango.rentalsystem.domain.department.domain.Department;
-import mango.rentalsystem.domain.member.domain.Member;
 import mango.rentalsystem.global.exception.CustomException;
-import mango.rentalsystem.global.exception.ErrorCode;
 
 @Slf4j
 @Service
@@ -33,9 +30,10 @@ public class CategoryService {
 	/**
 	 * 카테고리 전체 조회
 	 */
-	public List<CategoryResponse> findAll() {
-		List<Category> categories = categoryRepository.findAll();
-		return categories.stream().map(CategoryResponse::of).collect(Collectors.toList());
+	public List<CategorySummaryResponse> findAll() {
+		return categoryRepository.findAll().stream()
+			.map(o -> new CategorySummaryResponse(o.getId(), o.getName(), o.getDescription()))
+			.collect(Collectors.toList());
 	}
 
 	/**
@@ -65,12 +63,14 @@ public class CategoryService {
 
 	/**
 	 * 특정 카테고리 조회
-	 */
-	public CategoryDetailResponse findCategoryById(Long categoryId) {
+
+	public List<CategoryDetailResponse>findCategoryById(Long categoryId) {
+		List<Category> categoryList = categoryRepository.findAll();
 		Category category = categoryRepository.findById(categoryId)
 			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 		return CategoryDetailResponse.of(category);
 	}
+	 */
 
 	/**
 	 * 특정 카테고리 삭제

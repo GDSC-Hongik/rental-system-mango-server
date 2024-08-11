@@ -7,11 +7,13 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import lombok.Builder;
 import lombok.Getter;
 import mango.rentalsystem.domain.category.domain.Category;
 
 @Entity
 @Getter
+@Builder
 public class Item {
 	@Id
 	@GeneratedValue
