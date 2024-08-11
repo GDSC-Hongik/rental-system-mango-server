@@ -4,18 +4,12 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import mango.rentalsystem.domain.category.application.CategoryService;
-import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.response.CategoryResponse;
 
 @RestController
@@ -31,13 +25,4 @@ public class CategoryController {
 		List<CategoryResponse> response = categoryService.findAll();
 		return ResponseEntity.ok().body(response);
 	}
-
-	// 카테고리 추가
-	@PreAuthorize("hasRole('ADMIN')")	// ADMIN 검사
-	@PostMapping
-	public ResponseEntity<Void> createCategory(@Valid @RequestBody CategoryCreateRequest request) {
-		categoryService.createCategory(request);
-		return ResponseEntity.ok().build();
-	}
-
 }
