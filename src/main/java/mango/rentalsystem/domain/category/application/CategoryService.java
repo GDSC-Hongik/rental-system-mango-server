@@ -17,6 +17,7 @@ import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.response.CategoryResponse;
 import mango.rentalsystem.domain.department.dao.DepartmentRepository;
 import mango.rentalsystem.domain.department.domain.Department;
+import mango.rentalsystem.domain.member.domain.Member;
 import mango.rentalsystem.global.exception.CustomException;
 import mango.rentalsystem.global.exception.ErrorCode;
 
@@ -62,14 +63,14 @@ public class CategoryService {
 	}
 
 	/**
-	 * 카테고리 삭제
+	 * 특정 카테고리 삭제
 	 */
-	// ADMIN인지 검사
-
-	// category 최소 하나 있는지 확인
-	// 카테고리 0개만 삭제 불가
-	// 에러 띄우기 -> exception
-
+	@Transactional
+	public void deleteCategory(Long categoryId) {
+		Category category = categoryRepository.findById(categoryId)
+			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+		categoryRepository.deleteById(categoryId);
+	}
 
 
 	private void validateNoDuplicates(String categoryName, Department department) {

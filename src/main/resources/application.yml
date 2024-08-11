@@ -21,7 +21,7 @@ jwt:
   refresh-token-exp-time: ${JWT_ACCESS_TOKEN_EXP_TIME:120} # Test용 2분
 
 redis:
-  host: localhostg
+  host: localhost
   port: 6379
 
 logging:
