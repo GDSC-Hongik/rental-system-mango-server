@@ -16,11 +16,11 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.auth.domain.LoginUser;
 import mango.rentalsystem.domain.rental.application.RentalService;
-import mango.rentalsystem.domain.rental.domain.Rental;
-import mango.rentalsystem.domain.rental.dto.request.AdminRentalStatusUpdateRequest;
-import mango.rentalsystem.domain.rental.dto.request.RentalRequest;
-import mango.rentalsystem.domain.rental.dto.request.MemberRentalStatusUpdateRequest;
+import mango.rentalsystem.domain.rental.dto.request.RentalCreateRequest;
+import mango.rentalsystem.domain.rental.dto.request.RentalReviewRequest;
+import mango.rentalsystem.domain.rental.dto.request.RentalStatusUpdateRequest;
 import mango.rentalsystem.domain.rental.dto.response.RentalCreateResponse;
+import mango.rentalsystem.domain.rental.dto.response.RentalFindResponse;
 
 @RestController
 @RequestMapping("/rental")
@@ -32,39 +32,44 @@ public class RentalController {
 	@PostMapping
 	@PreAuthorize("hasRole('MEMBER')")
 	public ResponseEntity<RentalCreateResponse> createRental(@LoginUser String studentId,
-		@RequestBody @Valid RentalRequest rentalRequest) {
+		@RequestBody @Valid RentalCreateRequest rentalRequest) {
 		return ResponseEntity.ok(rentalService.createRental(studentId, rentalRequest));
 	}
 
+	// 페이지네이션 필요할 수도 있음
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<Rental>> getAllRentals() {
-		return null;
+	public ResponseEntity<List<RentalFindResponse>> getAllRental(@LoginUser String studentId) {
+		return ResponseEntity.ok(rentalService.findAllRental(studentId));
 	}
 
+	// 페이지네이션 필요할 수도 있음
 	@GetMapping("/myrental")
 	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<List<Rental>> getMyRentals(@LoginUser String studentId) {
-		return null;
+	public ResponseEntity<List<RentalFindResponse>> getMyRental(@LoginUser String studentId) {
+		return ResponseEntity.ok(rentalService.findMyRental(studentId));
 	}
 
 	@GetMapping("/{rentalId}")
-	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<Rental> getRental(@LoginUser String studentId, @PathVariable Long rentalId) {
-		return null;
+	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
+	public ResponseEntity<RentalFindResponse> getRental(@LoginUser String studentId, @PathVariable Long rentalId) {
+		return ResponseEntity.ok(rentalService.findRental(studentId, rentalId));
 	}
 
 	@PatchMapping("/{rentalId}")
-	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<Void> updateRentalStatusByMember(@PathVariable Long rentalId,
-		@RequestBody @Valid MemberRentalStatusUpdateRequest request) {
-		return null;
+	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')") // role hierarchy 구현하는 게 좋아보임
+	public ResponseEntity<Void> updateRentalStatus(@LoginUser String studentId, @PathVariable Long rentalId,
+		@RequestBody @Valid RentalStatusUpdateRequest request) {
+		rentalService.updateRentalStatus(studentId, rentalId, request);
+		return ResponseEntity.ok().build();
 	}
 
-	@PatchMapping("/{rentalId}/admin")
-	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Void> updateRentalStatusByAdmin(@PathVariable Long rentalId,
-		@RequestBody @Valid AdminRentalStatusUpdateRequest request) {
-		return null;
+	// 리뷰 메서드 필요
+	@PatchMapping("/{rentalId}/review")
+	@PreAuthorize("hasRole('MEMBER')")
+	public ResponseEntity<Void> updateRentalReview(@LoginUser String studentId, @PathVariable Long rentalId,
+		@RequestBody @Valid RentalReviewRequest request) {
+		rentalService.updateRentalReview(studentId, rentalId, request);
+		return ResponseEntity.ok().build();
 	}
 }
