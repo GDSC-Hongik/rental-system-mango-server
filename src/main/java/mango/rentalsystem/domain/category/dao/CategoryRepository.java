@@ -15,4 +15,6 @@ import mango.rentalsystem.domain.department.domain.Department;
 public interface CategoryRepository extends JpaRepository<Category, Long> {
 
 	Optional<Category> findByNameAndDepartment(String categoryName, Department department);
+
+	Optional<Category> findById(Long categoryId);
 }

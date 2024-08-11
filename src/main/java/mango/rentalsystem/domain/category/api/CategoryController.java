@@ -16,6 +16,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.category.application.CategoryService;
 import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
+import mango.rentalsystem.domain.category.dto.response.CategoryDetailResponse;
 import mango.rentalsystem.domain.category.dto.response.CategoryResponse;
 
 @RestController
@@ -38,6 +39,13 @@ public class CategoryController {
 	public ResponseEntity<Void> createCategory(@Valid @RequestBody CategoryCreateRequest request) {
 		categoryService.createCategory(request);
 		return ResponseEntity.ok().build();
+	}
+
+	// 특정 카테고리 정보 조회
+	@GetMapping("/{categoryId}")
+	public ResponseEntity<CategoryDetailResponse>getCategoryById(@PathVariable Long categoryId) {
+		CategoryDetailResponse response = categoryService.findCategoryById(categoryId);
+		return ResponseEntity.ok(response);
 	}
 
 	// 특정 카테고리 삭제
