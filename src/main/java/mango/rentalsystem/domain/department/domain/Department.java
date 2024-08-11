@@ -1,8 +1,8 @@
 package mango.rentalsystem.domain.department.domain;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import jakarta.persistence.CollectionTable;
@@ -15,13 +15,14 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
 import jakarta.persistence.MapKeyEnumerated;
-import jakarta.persistence.OneToMany;
+import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
-import mango.rentalsystem.domain.category.domain.Category;
-import mango.rentalsystem.domain.member.domain.Member;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Department {
 
 	@Id
@@ -31,21 +32,40 @@ public class Department {
 
 	private String name;
 
+	private String rentalPlace;
+
+	private String notice;
+
 	@ElementCollection
 	@CollectionTable(name = "weekly_rental_time", joinColumns = @JoinColumn(name = "department_id"))
 	@MapKeyColumn(name = "day_of_week")
 	@MapKeyEnumerated(EnumType.STRING)
 	private Map<DayOfWeek, DailyRentalTime> weeklyRentalTime = new HashMap<>();
 
-	private String place;
+	@Builder(access = AccessLevel.PRIVATE)
+	private Department(String name, String rentalPlace, Map<DayOfWeek, DailyRentalTime> weeklyRentalTime,
+		String notice) {
+		this.name = name;
+		this.rentalPlace = rentalPlace;
+		this.weeklyRentalTime = weeklyRentalTime;
+		this.notice = notice;
+	}
 
-	private String notice;
+	public static Department createDepartment(String name, Map<DayOfWeek, DailyRentalTime> weeklyRentalTime) {
+		return Department.builder().name(name).weeklyRentalTime(weeklyRentalTime).build();
+	}
 
+	public void updateDepartmentInfo(String name, String rentalPlace, String notice) {
+		this.name = name;
+		this.rentalPlace = rentalPlace;
+		this.notice = notice;
+	}
 
-	//member test용으로 제외
-	/*@OneToMany(mappedBy = "department")
-	private List<Member> members;*/
+	public void updateWeeklyRentalTime(Map<DayOfWeek, DailyRentalTime> weeklyRentalTime) {
+		this.weeklyRentalTime = weeklyRentalTime;
+	}
 
-	@OneToMany(mappedBy = "department")
-	private List<Category> categories;
+	public DailyRentalTime getTodayRentalTime() {
+		return this.weeklyRentalTime.get(LocalDate.now().getDayOfWeek());
+	}
 }
