@@ -17,6 +17,7 @@ import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
 import mango.rentalsystem.domain.department.dao.DepartmentRepository;
 import mango.rentalsystem.domain.department.domain.Department;
+import mango.rentalsystem.domain.item.dao.ItemRepository;
 import mango.rentalsystem.global.exception.CustomException;
 
 @Slf4j
@@ -26,6 +27,7 @@ import mango.rentalsystem.global.exception.CustomException;
 public class CategoryService {
 	private final CategoryRepository categoryRepository;
 	private final DepartmentRepository departmentRepository;
+	private final ItemRepository itemRepository;
 
 
 	/**
@@ -77,6 +79,10 @@ public class CategoryService {
 	public void deleteCategory(Long categoryId) {
 		Category category = categoryRepository.findById(categoryId)
 			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+		// 카테고리와 관련된 아이템을 먼저 삭제
+		itemRepository.deleteByCategoryId(categoryId);
+
+		// 그 후에 카테고리 삭제
 		categoryRepository.deleteById(categoryId);
 	}
 
