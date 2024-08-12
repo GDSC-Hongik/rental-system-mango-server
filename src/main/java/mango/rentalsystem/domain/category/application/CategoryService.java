@@ -56,7 +56,7 @@ public class CategoryService {
 		validateNoDuplicates(request.name(), department);
 
 		// 중복 검사 통과하면 Category 객체 생성
-		Category category = Category.create(request.name(), department, request.description());
+		Category category = Category.create(request.name(), department, description);
 
 		// Category 저장
 		categoryRepository.save(category);
@@ -77,15 +77,15 @@ public class CategoryService {
 	 * 특정 카테고리 정보 변경
 	 */
 	@Transactional
-	public void modifyCategory(CategoryModifyRequest request, Long categoryId) {
+	public CategorySummaryResponse modifyCategory (CategoryModifyRequest request, Long categoryId) {
 		Category category = categoryRepository.findById(categoryId)
 			.orElseThrow(()-> new CustomException(CATEGORY_NOT_FOUND));
 
 		String description = request.description() != null ? request.description() : "";
-
-		category.modify(request.name(), request.description());
-
+		category.modify(request.name(), description);
 		categoryRepository.save(category);
+
+		return CategorySummaryResponse.of(category);
 	}
 
 	/**
