@@ -14,6 +14,7 @@ import lombok.extern.slf4j.Slf4j;
 import mango.rentalsystem.domain.category.dao.CategoryRepository;
 import mango.rentalsystem.domain.category.domain.Category;
 import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
+import mango.rentalsystem.domain.category.dto.request.CategoryModifyRequest;
 import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
 import mango.rentalsystem.domain.department.dao.DepartmentRepository;
 import mango.rentalsystem.domain.department.domain.Department;
@@ -70,6 +71,14 @@ public class CategoryService {
 	public Category getCategoryById(Long categoryId) {
 		return categoryRepository.findById(categoryId)
 			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
+	}
+
+	/**
+	 * 특정 카테고리 정보 변경
+	 */
+	@Transactional
+	public void modifyCategory(CategoryModifyRequest request) {
+
 	}
 
 	/**

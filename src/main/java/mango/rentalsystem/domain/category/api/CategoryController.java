@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -19,6 +20,7 @@ import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.category.application.CategoryService;
 import mango.rentalsystem.domain.category.domain.Category;
 import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
+import mango.rentalsystem.domain.category.dto.request.CategoryModifyRequest;
 import mango.rentalsystem.domain.category.dto.response.CategoryDetailResponse;
 import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
 
@@ -49,6 +51,14 @@ public class CategoryController {
 	public CategoryDetailResponse getCategoryDetail(@PathVariable Long categoryId) {
 		Category category = categoryService.getCategoryById(categoryId);
 		return CategoryDetailResponse.of(category);
+	}
+
+	// 특정 카테고리 정보 변경
+	@PreAuthorize("hasRole('ADMIN')")
+	@PatchMapping("{/categoryId}")
+	public ResponseEntity<Void> modifyCategory(@Valid @RequestBody CategoryModifyRequest request) {
+		categoryService.modifyCategory(request);
+		return ResponseEntity.ok().build();
 	}
 
 	// 특정 카테고리 삭제
