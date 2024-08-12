@@ -77,8 +77,13 @@ public class CategoryService {
 	 * 특정 카테고리 정보 변경
 	 */
 	@Transactional
-	public void modifyCategory(CategoryModifyRequest request) {
+	public void modifyCategory(CategoryModifyRequest request, Long categoryId) {
+		Category category = categoryRepository.findById(categoryId)
+			.orElseThrow(()-> new CustomException(CATEGORY_NOT_FOUND));
 
+		category.modify(request.name(), request.description());
+
+		categoryRepository.save(category);
 	}
 
 	/**

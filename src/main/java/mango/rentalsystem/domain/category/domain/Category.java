@@ -56,4 +56,11 @@ public class Category {
 			.description(description)
 			.build();
 	}
+
+	public static Category modify(String name, String description) {
+		return Category.builder()
+			.name(name)
+			.description(description)
+			.build();
+	}
 }
