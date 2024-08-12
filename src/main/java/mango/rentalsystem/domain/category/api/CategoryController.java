@@ -55,7 +55,7 @@ public class CategoryController {
 
 	// 특정 카테고리 정보 변경
 	@PreAuthorize("hasRole('ADMIN')")
-	@PatchMapping("{/categoryId}")
+	@PatchMapping("/{categoryId}")
 	public ResponseEntity<Void> modifyCategory(@Valid @RequestBody CategoryModifyRequest request, @PathVariable Long categoryId) {
 		categoryService.modifyCategory(request, categoryId);
 		return ResponseEntity.ok().build();
