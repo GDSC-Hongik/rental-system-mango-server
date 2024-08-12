@@ -1,11 +1,14 @@
 package mango.rentalsystem.domain.rental.domain;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mango.rentalsystem.domain.department.domain.DailyRentalTime;
 import mango.rentalsystem.domain.item.domain.Item;
 import mango.rentalsystem.domain.member.domain.Member;
 
@@ -30,9 +33,85 @@ public class Rental {
 	@Enumerated(EnumType.STRING)
 	private RentalStatus rentalStatus;
 
+	private LocalDateTime requestDateTime;
+
 	private LocalDateTime borrowDateTime;
 
 	private LocalDateTime returnDateTime;
 
-	private int rentalReview;
+	private LocalDateTime deadlineDateTime;
+
+	private Integer rentalReview;
+
+	@Builder(access = AccessLevel.PRIVATE)
+	private Rental(Member member, Item item, RentalStatus rentalStatus, LocalDateTime requestDateTime,
+		LocalDateTime borrowDateTime, LocalDateTime returnDateTime, LocalDateTime deadlineDateTime,
+		Integer rentalReview) {
+		this.member = member;
+		this.item = item;
+		this.rentalStatus = rentalStatus;
+		this.requestDateTime = requestDateTime;
+		this.borrowDateTime = borrowDateTime;
+		this.returnDateTime = returnDateTime;
+		this.deadlineDateTime = deadlineDateTime;
+		this.rentalReview = rentalReview;
+	}
+
+	public static Rental createInitialRental(Member member, Item item) {
+		return Rental.builder()
+			.member(member)
+			.item(item)
+			.rentalStatus(RentalStatus.APPROVAL_REQUESTED)
+			.requestDateTime(LocalDateTime.now())
+			.deadlineDateTime(calculateDeadlineDateTime(member))
+			.build();
+	}
+
+	private static LocalDateTime calculateDeadlineDateTime(Member member) {
+		DailyRentalTime todayRentalTime = member.getDepartment().getTodayRentalTime();
+		return LocalDateTime.of(LocalDate.now().plusDays(todayRentalTime.getRentalDeadLineDate()),
+			todayRentalTime.getRentalDeadLineTime());
+	}
+
+	public void updateRentalStatusToCanceled() {
+		this.rentalStatus = RentalStatus.CANCELED;
+		// itemStatus IDLE 으로 만드는 로직
+	}
+
+	public void updateRentalStatusToApproved() {
+		this.rentalStatus = RentalStatus.APPROVED;
+		// itemStatus BOOK 으로 만드는 로직
+	}
+
+	public void updateRentalStatusToRejected() {
+		this.rentalStatus = RentalStatus.REJECTED;
+		// itemStatus IDLE 으로 만드는 로직
+	}
+
+	public void updateRentalStatusToBorrow() {
+		this.rentalStatus = RentalStatus.BORROW;
+		this.borrowDateTime = LocalDateTime.now();
+		// itemStatus BORROW 으로 만드는 로직
+	}
+
+	public void updateRentalStatusToOverdue() {
+		this.rentalStatus = RentalStatus.OVERDUE;
+		// member rentalBannedDate 설정 로직
+		// BannedDate 언제까지인지, 연장 필요한지 논의 필요
+	}
+
+	public void updateRentalStatusToReturnRequested() {
+		this.rentalStatus = RentalStatus.RETURN_REQUESTED;
+	}
+
+	public void updateRentalStatusToReturn() {
+		this.rentalStatus = RentalStatus.RETURN;
+		this.returnDateTime = LocalDateTime.now();
+		// itemStatus IDLE 으로 만드는 로직
+	}
+
+	public void updateRentalReview(Integer rentalReview) {
+		this.rentalReview = rentalReview;
+		// item averageReview 수정 로직
+	}
 }
