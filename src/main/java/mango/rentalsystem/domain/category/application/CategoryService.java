@@ -17,6 +17,8 @@ import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
 import mango.rentalsystem.domain.department.dao.DepartmentRepository;
 import mango.rentalsystem.domain.department.domain.Department;
+import mango.rentalsystem.domain.item.dao.ItemRepository;
+import mango.rentalsystem.domain.item.domain.Item;
 import mango.rentalsystem.global.exception.CustomException;
 
 @Slf4j
@@ -26,6 +28,7 @@ import mango.rentalsystem.global.exception.CustomException;
 public class CategoryService {
 	private final CategoryRepository categoryRepository;
 	private final DepartmentRepository departmentRepository;
+
 
 	/**
 	 * 카테고리 전체 조회
@@ -63,14 +66,11 @@ public class CategoryService {
 
 	/**
 	 * 특정 카테고리 조회
-
-	public List<CategoryDetailResponse>findCategoryById(Long categoryId) {
-		List<Category> categoryList = categoryRepository.findAll();
-		Category category = categoryRepository.findById(categoryId)
+	*/
+	public Category getCategoryById(Long categoryId) {
+		return categoryRepository.findById(categoryId)
 			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
-		return CategoryDetailResponse.of(category);
 	}
-	 */
 
 	/**
 	 * 특정 카테고리 삭제

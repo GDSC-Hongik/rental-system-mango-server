@@ -2,6 +2,8 @@ package mango.rentalsystem.domain.category.api;
 
 import java.util.List;
 
+import javax.xml.transform.Result;
+
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -15,10 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.category.application.CategoryService;
+import mango.rentalsystem.domain.category.domain.Category;
 import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.response.CategoryDetailResponse;
-import mango.rentalsystem.domain.category.dto.response.CategoryResponse;
 import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
+import mango.rentalsystem.domain.item.application.ItemService;
+import mango.rentalsystem.domain.item.domain.Item;
+import mango.rentalsystem.domain.item.domain.ItemStatus;
 
 @RestController
 @RequestMapping("/category")
@@ -43,13 +48,11 @@ public class CategoryController {
 	}
 
 	// 특정 카테고리 정보 조회
-	/*
 	@GetMapping("/{categoryId}")
-	public ResponseEntity<List<CategoryDetailResponse>>getCategoryById(@PathVariable Long categoryId) {
-		CategoryDetailResponse response = categoryService.findCategoryById(categoryId);
-		return ResponseEntity.ok(response);
+	public CategoryDetailResponse getCategoryDetail(@PathVariable Long categoryId) {
+		Category category = categoryService.getCategoryById(categoryId);
+		return CategoryDetailResponse.of(category);
 	}
-	*/
 
 	// 특정 카테고리 삭제
 	@PreAuthorize("hasRole('ADMIN')")	// ADMIN 검사

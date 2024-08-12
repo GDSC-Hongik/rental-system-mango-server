@@ -1,7 +1,11 @@
 package mango.rentalsystem.domain.item.dao;
 
-import org.springframework.stereotype.Repository;
+import java.util.List;
+import org.springframework.data.jpa.repository.JpaRepository;
+import mango.rentalsystem.domain.item.domain.Item;
 
-@Repository
-public class ItemRepository {
+public interface ItemRepository extends JpaRepository<Item, Long> {
+
+	// 카테고리 ID를 기반으로 Item 목록을 조회하는 메소드
+	List<Item> findByCategoryId(Long categoryId);
 }

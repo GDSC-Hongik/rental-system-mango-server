@@ -172,6 +172,13 @@ public class InitDb {
 				.build();
 			em.persist(itemD);
 
+			Item itemE = Item.builder()
+				.category(categoryComputerA)
+				.itemStatus(ItemStatus.IDLE)
+				.itemReview((double)0)
+				.build();
+			em.persist(itemE);
+
 			// rentalInit
 		}
 	}
