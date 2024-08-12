@@ -21,9 +21,6 @@ import mango.rentalsystem.domain.category.domain.Category;
 import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.response.CategoryDetailResponse;
 import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
-import mango.rentalsystem.domain.item.application.ItemService;
-import mango.rentalsystem.domain.item.domain.Item;
-import mango.rentalsystem.domain.item.domain.ItemStatus;
 
 @RestController
 @RequestMapping("/category")

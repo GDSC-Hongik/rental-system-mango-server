@@ -17,8 +17,6 @@ import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
 import mango.rentalsystem.domain.department.dao.DepartmentRepository;
 import mango.rentalsystem.domain.department.domain.Department;
-import mango.rentalsystem.domain.item.dao.ItemRepository;
-import mango.rentalsystem.domain.item.domain.Item;
 import mango.rentalsystem.global.exception.CustomException;
 
 @Slf4j
