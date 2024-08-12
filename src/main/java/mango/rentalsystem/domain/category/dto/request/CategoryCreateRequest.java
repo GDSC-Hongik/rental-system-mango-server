@@ -2,7 +2,6 @@ package mango.rentalsystem.domain.category.dto.request;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
-import mango.rentalsystem.domain.department.domain.Department;
 
 public record CategoryCreateRequest (
 	@NotBlank(message = "물품 종류명을 입력해주세요")

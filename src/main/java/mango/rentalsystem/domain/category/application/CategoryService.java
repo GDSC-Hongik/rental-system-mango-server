@@ -81,6 +81,8 @@ public class CategoryService {
 		Category category = categoryRepository.findById(categoryId)
 			.orElseThrow(()-> new CustomException(CATEGORY_NOT_FOUND));
 
+		String description = request.description() != null ? request.description() : "";
+
 		category.modify(request.name(), request.description());
 
 		categoryRepository.save(category);

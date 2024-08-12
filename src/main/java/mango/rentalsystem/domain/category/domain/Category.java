@@ -57,10 +57,8 @@ public class Category {
 			.build();
 	}
 
-	public static Category modify(String name, String description) {
-		return Category.builder()
-			.name(name)
-			.description(description)
-			.build();
+	public void modify(String name, String description) {
+		this.name = name;
+		this.description = description;
 	}
 }
