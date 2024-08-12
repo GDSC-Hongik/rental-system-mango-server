@@ -47,10 +47,11 @@ public class CategoryController {
 	}
 
 	// 특정 카테고리 정보 조회
+	@PreAuthorize("hasRole('ADMIN') or hasRole('MEMBER')")
 	@GetMapping("/{categoryId}")
 	public CategoryDetailResponse getCategoryDetail(@PathVariable Long categoryId) {
 		Category category = categoryService.getCategoryById(categoryId);
-		return CategoryDetailResponse.of(category);
+		return CategoryDetailResponse.from(category);
 	}
 
 	// 특정 카테고리 정보 변경

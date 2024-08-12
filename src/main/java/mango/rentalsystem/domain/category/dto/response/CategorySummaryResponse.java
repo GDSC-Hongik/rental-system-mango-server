@@ -7,7 +7,7 @@ public record CategorySummaryResponse(
 	String name,
 	String description
 ) {
-	public static CategorySummaryResponse of(Category category) {
+	public static CategorySummaryResponse from(Category category) {
 		return new CategorySummaryResponse(
 			category.getId(),
 			category.getName(),

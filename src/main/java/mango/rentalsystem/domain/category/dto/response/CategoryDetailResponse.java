@@ -20,10 +20,10 @@ public class CategoryDetailResponse {
 	private String description;
 	private List<ItemResponse> items;
 
-	public static CategoryDetailResponse of(Category category) {
+	public static CategoryDetailResponse from (Category category) {
 		List<ItemResponse> itemResponses = category.getItems() != null
 			? category.getItems().stream()
-			.map(ItemResponse::of)
+			.map(ItemResponse::from)
 			.collect(Collectors.toList())
 			: Collections.emptyList();
 
@@ -42,7 +42,7 @@ public class CategoryDetailResponse {
 		private ItemStatus itemStatus;
 		private Double itemReview;
 
-		public static ItemResponse of(Item item) {
+		public static ItemResponse from(Item item) {
 			return new ItemResponse(
 				item.getId(),
 				item.getItemStatus(),

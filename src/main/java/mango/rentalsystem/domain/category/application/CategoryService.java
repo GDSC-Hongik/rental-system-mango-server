@@ -85,7 +85,7 @@ public class CategoryService {
 		category.modify(request.name(), description);
 		categoryRepository.save(category);
 
-		return CategorySummaryResponse.of(category);
+		return CategorySummaryResponse.from(category);
 	}
 
 	/**
