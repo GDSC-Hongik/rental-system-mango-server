@@ -9,6 +9,7 @@ public enum RentalStatus {
 
 	//대여 요청 후
 	APPROVAL_REQUESTED("승인 요청됨"),
+	CANCELED("취소됨"),
 	APPROVED("승인됨"),
 	REJECTED("거절됨"),
 

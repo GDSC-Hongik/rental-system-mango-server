@@ -30,7 +30,6 @@ public class CategoryService {
 	private final DepartmentRepository departmentRepository;
 	private final ItemRepository itemRepository;
 
-
 	/**
 	 * 카테고리 전체 조회
 	 */
@@ -101,6 +100,16 @@ public class CategoryService {
 		// 그 후에 카테고리 삭제
 		categoryRepository.deleteById(categoryId);
 	}
+
+
+	private void validateNoDuplicates(String categoryName, Department department) {
+		Optional<Category> existingCategory = categoryRepository.findByNameAndDepartment(categoryName, department);
+
+		if (existingCategory.isPresent()) {	// 기존에 이미 존재하는 카테고리라면
+			throw new CustomException(DUPLICATE_CATEGORY);
+		}
+	}
+
 
 
 	private void validateNoDuplicates(String categoryName, Department department) {
