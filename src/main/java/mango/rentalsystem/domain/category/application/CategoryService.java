@@ -93,7 +93,7 @@ public class CategoryService {
 	 */
 	@Transactional
 	public void deleteCategory(Long categoryId) {
-		Category category = categoryRepository.findById(categoryId)
+		categoryRepository.findById(categoryId)
 			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 		// 카테고리와 관련된 아이템을 먼저 삭제
 		itemRepository.deleteByCategoryId(categoryId);
