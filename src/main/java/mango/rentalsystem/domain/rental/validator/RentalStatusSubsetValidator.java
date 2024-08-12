@@ -49,6 +49,6 @@ public class RentalStatusSubsetValidator implements ConstraintValidator<RentalSt
 		RentalStatus[] subset = memberRole == ROLE_MEMBER ? memberSubset : adminSubset;
 		context.disableDefaultConstraintViolation();
 		context.buildConstraintViolationWithTemplate(memberRole.name() + "은 " + Arrays.toString(
-			subset) + " 중 하나의 상태로만 요청이 가능합니다.");
+			subset) + " 중 하나의 상태로만 요청이 가능합니다.").addConstraintViolation();
 	}
 }

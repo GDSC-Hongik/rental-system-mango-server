@@ -10,6 +10,7 @@ import lombok.Getter;
 public enum ErrorCode {
 	// 400 BAD_REQUEST
 	INVALID_DEPARTMENT_ID(HttpStatus.BAD_REQUEST, "유효하지 않은 학과 id입니다."),
+	METHOD_ARGUMENT_NOT_VALID(HttpStatus.BAD_REQUEST, "유효하지 않은 인자입니다."),
 
 	// 401 UNAUTHORIZED
 
