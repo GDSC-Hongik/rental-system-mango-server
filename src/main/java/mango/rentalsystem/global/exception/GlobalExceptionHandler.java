@@ -3,6 +3,7 @@ package mango.rentalsystem.global.exception;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -35,5 +36,13 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		String errorMessage = e.getBindingResult().getAllErrors().get(0).getDefaultMessage();
 		return ResponseEntity.status(ErrorCode.METHOD_ARGUMENT_NOT_VALID.getStatus())
 			.body(ErrorResponse.of(ErrorCode.METHOD_ARGUMENT_NOT_VALID, errorMessage));
+	}
+
+	@Override
+	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException e,
+		HttpHeaders headers, HttpStatusCode status, WebRequest request) {
+		log.error("HTTP_MESSAGE_NOT_READABLE : {}", e.getMessage(), e);
+		return ResponseEntity.status(ErrorCode.HTTP_MESSAGE_NOT_READABLE.getStatus())
+			.body(ErrorResponse.of(ErrorCode.HTTP_MESSAGE_NOT_READABLE));
 	}
 }
