@@ -14,6 +14,12 @@ public enum ErrorCode {
 	HTTP_MESSAGE_NOT_READABLE(HttpStatus.BAD_REQUEST, "필드가 잘못된 타입이거나 혹은 누락되었습니다."),
 
 	// 401 UNAUTHORIZED
+	EXPIRED_TOKEN(HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."),
+	UNSUPPORTED_TOKEN(HttpStatus.UNAUTHORIZED, "지원하지 않는 형식의 토큰입니다."),
+	WRONG_TYPE_TOKEN(HttpStatus.UNAUTHORIZED, "잘못된 형식의 토큰입니다."),
+	WRONG_SIGNATURE_TOKEN(HttpStatus.UNAUTHORIZED, "토큰 서명이 유효하지 않습니다."),
+	UNKNOWN_TOKEN(HttpStatus.UNAUTHORIZED, "인증 토큰이 존재하지 않습니다."),
+	INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token입니다."),
 
 	// 403 FORBIDDEN
 
