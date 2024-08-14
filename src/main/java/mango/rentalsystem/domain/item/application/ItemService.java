@@ -49,7 +49,7 @@ public class ItemService {
 		Item item = itemRepository.findById(itemId)
 			.orElseThrow(()->new CustomException(ITEM_NOT_FOUND));
 
-		item.modify(request.itemStatus(), request.itemReview());
+		item.modify(request.itemStatus());
 		itemRepository.save(item);
 
 		return ItemDetailResponse.from(item);
