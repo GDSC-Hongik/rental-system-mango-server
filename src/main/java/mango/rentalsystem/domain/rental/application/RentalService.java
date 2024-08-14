@@ -45,12 +45,7 @@ public class RentalService {
 
 		// Member의 rentalBannedDate 검증 필요
 
-		DailyRentalTime todayRentalTime = member.getDepartment().getTodayRentalTime();
-
-		if (LocalTime.now().isBefore(todayRentalTime.getRentalStartTime()) ||
-			LocalTime.now().isAfter(todayRentalTime.getRentalEndTime())) {
-			throw new CustomException(NOT_OPERATING_HOURS);
-		} // 검증 편의 메서드 Department에 추가 예정
+		member.getDepartment().validateRentalTime();
 
 		Item item = itemRepository.findById(request.itemId())
 			.orElseThrow(() -> new CustomException(ITEM_NOT_FOUND));
@@ -114,12 +109,7 @@ public class RentalService {
 		Member member = memberRepository.findByStudentId(studentId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		DailyRentalTime todayRentalTime = member.getDepartment().getTodayRentalTime();
-
-		if (LocalTime.now().isBefore(todayRentalTime.getRentalStartTime()) ||
-			LocalTime.now().isAfter(todayRentalTime.getRentalEndTime())) {
-			throw new CustomException(NOT_OPERATING_HOURS);
-		} // 검증 편의 메서드 Department에 추가 예정
+		member.getDepartment().validateRentalTime();
 
 		Rental rental = rentalRepository.findById(rentalId)
 			.orElseThrow(() -> new CustomException(RENTAL_NOT_FOUND));
