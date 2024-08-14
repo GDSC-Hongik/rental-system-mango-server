@@ -39,13 +39,13 @@ public class Member {
 
 	private String pictureUrl;
 
-	private boolean absenceStatus;
+	private Boolean absenceStatus;
 
 	private LocalDate rentalBannedDate;
 
 	@Builder
 	private Member(String studentId, String password, String name, MemberRole role, Department department, String phone,
-		String pictureUrl, boolean absenceStatus, LocalDate rentalBannedDate) {
+		String pictureUrl, Boolean absenceStatus, LocalDate rentalBannedDate) {
 		this.studentId = studentId;
 		this.password = password;
 		this.name = name;
