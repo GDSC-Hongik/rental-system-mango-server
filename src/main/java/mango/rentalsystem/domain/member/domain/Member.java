@@ -10,11 +10,12 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import mango.rentalsystem.domain.department.domain.Department;
 import mango.rentalsystem.domain.rental.domain.Rental;
 
 @Entity
-@Getter
+@Getter @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -52,4 +53,6 @@ public class Member {
 	private List<Rental> rentalList = new ArrayList<>();
 
 	private LocalDate rentalBannedDate;
+
+
 }
