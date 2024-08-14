@@ -63,6 +63,10 @@ public class Member {
 		this.absenceStatus = absenceStatus;
 	}
 
+	public void updateMemberPassword(String password) {
+		this.password = password;
+	}
+
 	public void validateRentalBannedDate() {
 		if (!(LocalDate.now().isAfter(rentalBannedDate))) {
 			throw new CustomException(ErrorCode.RENTAL_BANNED);

@@ -11,6 +11,7 @@ import java.util.stream.Collectors;
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.auth.domain.LoginUser;
 import mango.rentalsystem.domain.member.dto.request.MemberInfoUpdateRequest;
+import mango.rentalsystem.domain.member.dto.request.MemberPasswordUpdateRequest;
 import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -151,6 +152,14 @@ public class MemberController {
 	public ResponseEntity<Void> updateMyInfo(@LoginUser String studentId,
 		@RequestBody @Valid MemberInfoUpdateRequest request) {
 		memberService.updateMyInfo(studentId, request);
+		return ResponseEntity.ok().build();
+	}
+
+	@PatchMapping("/myinfo/password")
+	@PreAuthorize("hasRole('MEMBER')")
+	public ResponseEntity<Void> updateMyPassword(@LoginUser String studentId,
+		@RequestBody @Valid MemberPasswordUpdateRequest request) {
+		memberService.updateMyPassword(studentId, request);
 		return ResponseEntity.ok().build();
 	}
 

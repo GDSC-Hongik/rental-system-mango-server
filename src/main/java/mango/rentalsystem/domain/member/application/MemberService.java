@@ -1,5 +1,7 @@
 package mango.rentalsystem.domain.member.application;
 
+import static mango.rentalsystem.global.exception.ErrorCode.*;
+
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -7,6 +9,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.member.dto.request.MemberInfoUpdateRequest;
+import mango.rentalsystem.domain.member.dto.request.MemberPasswordUpdateRequest;
 import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
 import mango.rentalsystem.global.exception.CustomException;
 import mango.rentalsystem.global.exception.ErrorCode;
@@ -45,6 +48,17 @@ public class MemberService {
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 		member.updateMemberInfo(request.name(), request.phone(), request.absenceStatus());
+	}
+
+	public void updateMyPassword(String studentId, MemberPasswordUpdateRequest request) {
+		Member member = memberRepository.findByStudentId(studentId)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+		if (!passwordEncoder.matches(request.currentPassword(), member.getPassword())) {
+			throw new CustomException(INVALID_PASSWORD);
+		}
+
+		member.updateMemberPassword(passwordEncoder.encode(request.newPassword()));
 	}
 
 	public void saveMembersFromCsv(String filePath) {
