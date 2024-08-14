@@ -162,22 +162,4 @@ public class MemberController {
 		memberService.updateMyPassword(studentId, request);
 		return ResponseEntity.ok().build();
 	}
-
-	// 현재 로그인된 멤버의 대여 중인 항목 조회 (Member 전용)
-	@GetMapping("/current-rental")
-	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<List<RentalFindResponse>> getCurrentRentals(@AuthenticationPrincipal AuthDetails authDetails) {
-		String studentId = authDetails.getUsername();
-		List<RentalFindResponse> currentRentals = memberService.getCurrentRentals(studentId);
-		return ResponseEntity.ok(currentRentals);
-	}
-
-	// 현재 로그인된 멤버의 대여 기록 조회 (Member 전용)
-	@GetMapping("/history")
-	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<List<RentalFindResponse>> getPastRentals(@AuthenticationPrincipal AuthDetails authDetails) {
-		String studentId = authDetails.getUsername();
-		List<RentalFindResponse> pastRentals = memberService.getPastRentals(studentId);
-		return ResponseEntity.ok(pastRentals);
-	}
 }

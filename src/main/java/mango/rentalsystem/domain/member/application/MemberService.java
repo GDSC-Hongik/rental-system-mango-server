@@ -166,24 +166,6 @@ public class MemberService {
 		return memberRepository.save(member);
 	}
 
-	// 'BORROW' 상태인 항목만 필터링
-	public List<RentalFindResponse> getCurrentRentals(String studentId) {
-		List<RentalFindResponse> allRentals = rentalService.findMyRental(studentId);
-
-		return allRentals.stream()
-			.filter(rental -> rental.rentalStatus() == RentalStatus.BORROW)
-			.collect(Collectors.toList());
-	}
-
-	// 'RETURN' 상태인 항목만 필터링
-	public List<RentalFindResponse> getPastRentals(String studentId) {
-		List<RentalFindResponse> allRentals = rentalService.findMyRental(studentId);
-
-		return allRentals.stream()
-			.filter(rental -> rental.rentalStatus() == RentalStatus.RETURN)
-			.collect(Collectors.toList());
-	}
-
 	// 특정 학생의 정지 기간 조회
 	public LocalDate getRentalBannedDate(String studentId) {
 		return memberRepository.findByStudentId(studentId)
