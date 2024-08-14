@@ -1,7 +1,10 @@
 package mango.rentalsystem.domain.department.domain;
 
+import static mango.rentalsystem.global.exception.ErrorCode.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -19,6 +22,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mango.rentalsystem.global.exception.CustomException;
 
 @Entity
 @Getter
@@ -67,5 +71,13 @@ public class Department {
 
 	public DailyRentalTime getTodayRentalTime() {
 		return this.weeklyRentalTime.get(LocalDate.now().getDayOfWeek());
+	}
+
+	public void validateRentalTime() {
+		DailyRentalTime todayRentalTime = this.getTodayRentalTime();
+		if (LocalTime.now().isBefore(todayRentalTime.getRentalStartTime()) ||
+			LocalTime.now().isAfter(todayRentalTime.getRentalEndTime())) {
+			throw new CustomException(NOT_OPERATING_HOURS);
+		}
 	}
 }
