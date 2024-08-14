@@ -34,5 +34,12 @@ public class Item {
 	private ItemStatus itemStatus;
 
 	private Double itemReview;
-	
+
+	public static Item create(Category category, ItemStatus itemStatus, Double itemReview) {
+		return Item.builder()
+			.category(category)
+			.itemStatus(itemStatus)
+			.itemReview(itemReview)
+			.build();
+	}
 }
