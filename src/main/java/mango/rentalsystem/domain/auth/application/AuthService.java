@@ -1,19 +1,17 @@
 package mango.rentalsystem.domain.auth.application;
 
-import java.util.Optional;
+import static mango.rentalsystem.global.exception.ErrorCode.*;
 
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.MalformedJwtException;
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.auth.dto.request.StudentIdPasswordRequest;
 import mango.rentalsystem.domain.auth.dto.response.TokenResponse;
 import mango.rentalsystem.domain.member.dao.MemberRepository;
 import mango.rentalsystem.domain.member.domain.Member;
+import mango.rentalsystem.global.exception.CustomException;
 import mango.rentalsystem.global.security.JwtTokenProvider;
 
 @Service
@@ -31,10 +29,10 @@ public class AuthService {
 		final String password = request.password();
 
 		Member member = memberRepository.findByStudentId(studentId)
-			.orElseThrow(() -> new UsernameNotFoundException("학번이 존재하지 않습니다."));
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		if (!passwordEncoder.matches(password, member.getPassword())) {
-			throw new BadCredentialsException("비밀번호가 일치하지 않습니다.");
+			throw new CustomException(INVALID_PASSWORD);
 		}
 
 		String accessToken = jwtTokenProvider.createAccessToken(studentId, member.getRole());
@@ -44,23 +42,22 @@ public class AuthService {
 	}
 
 	//refresh 토큰 재발급 로직 구현
-	public TokenResponse reissue(String refreshToken) {
-		if (refreshToken != null && refreshToken.startsWith("Bearer ")) {
-			String token = refreshToken.substring(7); // "Bearer ".length() == 7
+	public TokenResponse reissue(String bearerToken) {
+		final String token = jwtTokenProvider.getJwtFromBearerToken(bearerToken); // refresh token
+		jwtTokenProvider.validateToken(token);
 
-			String studentId = jwtTokenProvider.parseToken(token).getSubject();
-			if (redisTemplate.hasKey(studentId)) {
-				redisTemplate.delete(studentId);
-				Optional<Member> optionalMember = memberRepository.findByStudentId(studentId);
-				Member member = optionalMember.orElseThrow(() -> new BadCredentialsException("유효하지 않은 사용자입니다."));
+		String studentId = jwtTokenProvider.parseToken(token).getSubject();
+		if (redisTemplate.hasKey(studentId)) {
+			redisTemplate.delete(studentId);
+			Member member = memberRepository.findByStudentId(studentId)
+				.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-				String accessToken = jwtTokenProvider.createAccessToken(studentId, member.getRole());
-				refreshToken = jwtTokenProvider.createRefreshToken(studentId);
+			String accessToken = jwtTokenProvider.createAccessToken(studentId, member.getRole());
+			String refreshToken = jwtTokenProvider.createRefreshToken(studentId);
 
-				return TokenResponse.of(accessToken, refreshToken);
-			}
-			throw new BadCredentialsException("존재하지 않거나 만료된 refresh token 입니다.");
+			return TokenResponse.of(accessToken, refreshToken);
+		} else {
+			throw new CustomException(INVALID_REFRESH_TOKEN);
 		}
-		throw new MalformedJwtException("잘못된 형식의 refresh token 입니다.");
 	}
 }

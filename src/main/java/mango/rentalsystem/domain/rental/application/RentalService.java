@@ -1,6 +1,7 @@
 package mango.rentalsystem.domain.rental.application;
 
 import static mango.rentalsystem.domain.member.domain.MemberRole.*;
+import static mango.rentalsystem.global.exception.ErrorCode.*;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -26,6 +27,7 @@ import mango.rentalsystem.domain.rental.dto.request.RentalReviewRequest;
 import mango.rentalsystem.domain.rental.dto.request.RentalStatusUpdateRequest;
 import mango.rentalsystem.domain.rental.dto.response.RentalCreateResponse;
 import mango.rentalsystem.domain.rental.dto.response.RentalFindResponse;
+import mango.rentalsystem.global.exception.CustomException;
 
 @Service
 @Transactional
@@ -38,7 +40,7 @@ public class RentalService {
 
 	public RentalCreateResponse createRental(String studentId, RentalCreateRequest request) {
 		Member member = memberRepository.findByStudentId(studentId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		// Member의 rentalBannedDate 검증 필요
 
@@ -46,14 +48,14 @@ public class RentalService {
 
 		if (LocalTime.now().isBefore(todayRentalTime.getRentalStartTime()) ||
 			LocalTime.now().isAfter(todayRentalTime.getRentalEndTime())) {
-			throw new RuntimeException("대여 가능 시간이 아닙니다.");
+			throw new CustomException(NOT_OPERATING_HOURS);
 		} // 검증 편의 메서드 Department에 추가 예정
 
 		Item item = itemRepository.findById(request.itemId())
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 물품입니다."));
+			.orElseThrow(() -> new CustomException(ITEM_NOT_FOUND));
 
 		if (!(member.getDepartment().equals(item.getCategory().getDepartment()))) {
-			throw new RuntimeException("소속 학과 물품이 아닙니다.");
+			throw new CustomException(UNAUTHORIZED_ITEM);
 		}
 
 		// itemStatus가 IDLE인지 검증하는 메서드
@@ -67,7 +69,7 @@ public class RentalService {
 
 	public List<RentalFindResponse> findAllRental(String studentId) {
 		Member member = memberRepository.findByStudentId(studentId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Department department = member.getDepartment();
 
@@ -82,7 +84,7 @@ public class RentalService {
 
 	public List<RentalFindResponse> findMyRental(String studentId) {
 		Member member = memberRepository.findByStudentId(studentId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		List<Rental> myRentalList = rentalRepository.findAllByMember(member);
 
@@ -95,10 +97,10 @@ public class RentalService {
 
 	public RentalFindResponse findRental(String studentId, Long rentalId) {
 		Member member = memberRepository.findByStudentId(studentId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Rental rental = rentalRepository.findById(rentalId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 대여 Id 입니다."));
+			.orElseThrow(() -> new CustomException(RENTAL_NOT_FOUND));
 
 		validateAuthForRental(member, rental);
 
@@ -107,17 +109,17 @@ public class RentalService {
 
 	public void updateRentalStatus(String studentId, Long rentalId, RentalStatusUpdateRequest request) {
 		Member member = memberRepository.findByStudentId(studentId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		DailyRentalTime todayRentalTime = member.getDepartment().getTodayRentalTime();
 
 		if (LocalTime.now().isBefore(todayRentalTime.getRentalStartTime()) ||
 			LocalTime.now().isAfter(todayRentalTime.getRentalEndTime())) {
-			throw new RuntimeException("대여 가능 시간이 아닙니다.");
+			throw new CustomException(NOT_OPERATING_HOURS);
 		} // 검증 편의 메서드 Department에 추가 예정
 
 		Rental rental = rentalRepository.findById(rentalId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 대여 Id 입니다."));
+			.orElseThrow(() -> new CustomException(RENTAL_NOT_FOUND));
 
 		validateAuthForRental(member, rental);
 
@@ -130,28 +132,28 @@ public class RentalService {
 					case CANCELED -> rental.updateRentalStatusToCanceled(); // CANCELED를 admin만 할 수 있게 해야하나 고민중
 					case APPROVED -> rental.updateRentalStatusToApproved();
 					case REJECTED -> rental.updateRentalStatusToRejected();
-					default -> throw new IllegalStateException(currentStatus.name() + requestStatus.name());
+					default -> throw new CustomException(INVALID_RENTAL_STATUS);
 				}
 			}
 			case APPROVED -> {
 				switch (requestStatus) {
 					case BORROW -> rental.updateRentalStatusToBorrow();
-					default -> throw new IllegalStateException(currentStatus.name() + requestStatus.name());
+					default -> throw new CustomException(INVALID_RENTAL_STATUS);
 				}
 			}
 			case BORROW, OVERDUE -> {
 				switch (requestStatus) {
 					case RETURN_REQUESTED -> rental.updateRentalStatusToReturnRequested();
-					default -> throw new IllegalStateException(currentStatus.name() + requestStatus.name());
+					default -> throw new CustomException(INVALID_RENTAL_STATUS);
 				}
 			}
 			case RETURN_REQUESTED -> {
 				switch (requestStatus) {
 					case RETURN -> rental.updateRentalStatusToReturn();
-					default -> throw new IllegalStateException(currentStatus.name() + requestStatus.name());
+					default -> throw new CustomException(INVALID_RENTAL_STATUS);
 				}
 			}
-			default -> throw new IllegalStateException(currentStatus.name() + requestStatus.name());
+			default -> throw new CustomException(INVALID_RENTAL_STATUS);
 		}
 	}
 
@@ -169,17 +171,17 @@ public class RentalService {
 
 	public void updateRentalReview(String studentId, Long rentalId, RentalReviewRequest request) {
 		Member member = memberRepository.findByStudentId(studentId)
-			.orElseThrow(() -> new RuntimeException("존재하지 않는 회원입니다."));
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Rental rental = rentalRepository.findById(rentalId)
-			.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 대여 Id 입니다."));
+			.orElseThrow(() -> new CustomException(RENTAL_NOT_FOUND));
 
 		validateAuthForRental(member, rental);
 
 		if (rental.getRentalStatus() == RentalStatus.RETURN) {
 			rental.updateRentalReview(request.rentalReview());
 		} else {
-			throw new IllegalStateException(rental.getRentalStatus().name());
+			throw new CustomException(INVALID_RENTAL_REVIEW);
 		}
 	}
 
@@ -187,7 +189,7 @@ public class RentalService {
 		Member rentalMember = rental.getMember();
 		if (member.getRole() == ROLE_MEMBER && !(rentalMember.equals(member))
 			|| member.getRole() == ROLE_ADMIN && !(rentalMember.getDepartment().equals(member.getDepartment()))) {
-			throw new IllegalStateException("권한이 없습니다.");
+			throw new CustomException(UNAUTHORIZED_RENTAL);
 		}
 	}
 }
