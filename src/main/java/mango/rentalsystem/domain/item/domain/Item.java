@@ -35,11 +35,14 @@ public class Item {
 
 	private Double itemReview;
 
-	public static Item create(Category category, ItemStatus itemStatus, Double itemReview) {
+	private Integer itemRentalCount;
+
+	public static Item create(Category category) {
 		return Item.builder()
 			.category(category)
-			.itemStatus(itemStatus)
-			.itemReview(itemReview)
+			.itemStatus(ItemStatus.IDLE)
+			.itemReview(0.0)
+			.itemRentalCount(0)
 			.build();
 	}
 
