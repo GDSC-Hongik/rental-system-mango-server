@@ -16,6 +16,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.global.security.JwtAuthenticationFilter;
+import mango.rentalsystem.global.security.JwtExceptionFilter;
 
 @Configuration
 @EnableWebSecurity
@@ -24,6 +25,7 @@ import mango.rentalsystem.global.security.JwtAuthenticationFilter;
 public class WebSecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
+	private final JwtExceptionFilter jwtExceptionFilter;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,6 +37,7 @@ public class WebSecurityConfig {
 				SessionCreationPolicy.STATELESS))
 			.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll()) // @PreAuthorization 사용.
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+			.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
 			.build();
 	}
 
