@@ -8,7 +8,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -31,12 +31,10 @@ import mango.rentalsystem.global.security.AuthDetails;
 
 @RestController
 @RequestMapping("/members")
+@RequiredArgsConstructor
 public class MemberController {
 
-
-	@Autowired
-	private MemberService memberService;
-
+	private final MemberService memberService;
 
 	// 회원 조회
 	@GetMapping
@@ -72,8 +70,6 @@ public class MemberController {
 			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
 		}
 	}
-
-	//////////////////////////////////////////////////////////////////////////////////////
 
 	// 특정 회원 정보 조회
 	@GetMapping("/{memberId}")
@@ -130,8 +126,6 @@ public class MemberController {
 		}
 	}
 
-	///////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 	// 맨 처음 웹 실행시 ADMIN이 학생목록을 load해야 함
 	@GetMapping("/load")
 	@PreAuthorize("hasRole('ADMIN')")
@@ -139,8 +133,6 @@ public class MemberController {
 		memberService.saveMembersFromCsv(filePath);
 		return "csv파일 로드 중";
 	}
-
-
 
 	// 현재 로그인된 멤버의 정보 조회 (Member 전용) , 비밀번호를 입력해야 정보 조회 가능
 	@GetMapping("/myinfo")@PreAuthorize("hasRole('MEMBER')")
@@ -204,8 +196,6 @@ public class MemberController {
 		}).orElseGet(() -> ResponseEntity.notFound().build());
 	}
 
-
-
 	// 현재 로그인된 멤버의 대여 중인 항목 조회 (Member 전용)
 	@GetMapping("/current-rental")
 	@PreAuthorize("hasRole('MEMBER')")
@@ -224,8 +214,6 @@ public class MemberController {
 		return ResponseEntity.ok(pastRentals);
 	}
 
-
-
 	// 현재 로그인된 멤버의 정지 기간 조회 (Member 전용)
 	@GetMapping("/suspension")
 	@PreAuthorize("hasRole('MEMBER')")
@@ -243,8 +231,4 @@ public class MemberController {
 				.body("대여가 정지되지 않았습니다");
 		}
 	}
-
-
-
-
 }

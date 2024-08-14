@@ -5,7 +5,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,21 +20,14 @@ import mango.rentalsystem.domain.rental.domain.RentalStatus;
 import mango.rentalsystem.domain.rental.dto.response.RentalFindResponse;
 
 @Service
+@Transactional
+@RequiredArgsConstructor
 public class MemberService {
 
-	@Autowired
-	private PasswordEncoder passwordEncoder;
-
-
-	@Autowired
-	private MemberRepository memberRepository;
-
-
-	@Autowired
-	private RentalService rentalService;
-
-	@Autowired
-	private CsvUtil csvUtil;
+	private final PasswordEncoder passwordEncoder;
+	private final MemberRepository memberRepository;
+	private final RentalService rentalService;
+	private final CsvUtil csvUtil;
 
 	public void saveMembersFromCsv(String filePath) {
 		List<Member> members = csvUtil.readMembersFromCsv(filePath);
@@ -55,19 +48,15 @@ public class MemberService {
 		return memberRepository.findAll();
 	}
 
-
 	// 특정 회원 조회
 	public Optional<Member> findById(Long id) {
 		return memberRepository.findById(id);
 	}
 
-
 	// 특정 회원 삭제
-	@Transactional
 	public void deleteMember(Long id) {
 		memberRepository.deleteById(id);
 	}
-
 
 	// 회원 ID로 조회
 	public Optional<Member> findByStudentId(String studentId) {
@@ -75,7 +64,6 @@ public class MemberService {
 	}
 
 	// 회원 생성 또는 수정
-	@Transactional
 	public Member saveMember(Member member) {
 		// studentId 중복 체크
 		Optional<Member> existingMember = memberRepository.findByStudentId(member.getStudentId());
@@ -87,17 +75,12 @@ public class MemberService {
 		return memberRepository.save(member);
 	}
 
-
-
-
 	// 회원 정보 업데이트 (개인)
-	@Transactional
 	public Member updateMember(Long id, UpdateMemberRequest request) {
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
 
 		// 요청에서 제공된 값으로 업데이트
-
 
 		if (request.getStudentId() != null) {
 			member.setStudentId(request.getStudentId());
@@ -120,7 +103,6 @@ public class MemberService {
 	}
 
 	// 회원 정보 업데이트 (관리자)
-	@Transactional
 	public Member updateMemberByAdmin(Long id, UpdateMemberRequestByAdmin request) {
 		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
@@ -152,7 +134,6 @@ public class MemberService {
 		return memberRepository.save(member);
 	}
 
-
 	// 'BORROW' 상태인 항목만 필터링
 	public List<RentalFindResponse> getCurrentRentals(String studentId) {
 		List<RentalFindResponse> allRentals = rentalService.findMyRental(studentId);
@@ -171,17 +152,12 @@ public class MemberService {
 			.collect(Collectors.toList());
 	}
 
-
-
-
 	// 특정 학생의 정지 기간 조회
 	public LocalDate getRentalBannedDate(String studentId) {
 		return memberRepository.findByStudentId(studentId)
 			.map(Member::getRentalBannedDate)
 			.orElse(null);
 	}
-
-
 
 	// 회원 비밀번호 확인
 	public boolean checkPassword(Long memberId, String password) {
@@ -190,7 +166,4 @@ public class MemberService {
 
 		return passwordEncoder.matches(password, member.getPassword());
 	}
-
-
-
 }
