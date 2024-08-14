@@ -11,6 +11,8 @@ import mango.rentalsystem.domain.category.domain.Category;
 import mango.rentalsystem.domain.item.dao.ItemRepository;
 import mango.rentalsystem.domain.item.domain.Item;
 import mango.rentalsystem.domain.item.dto.request.ItemCreateRequest;
+import mango.rentalsystem.domain.item.dto.request.ItemModifyRequest;
+import mango.rentalsystem.domain.item.dto.response.ItemDetailResponse;
 import mango.rentalsystem.global.exception.CustomException;
 
 @Service
@@ -37,5 +39,19 @@ public class ItemService {
 	public Item getItemById(Long itemId) {
 		return itemRepository.findById(itemId)
 			.orElseThrow(()->new CustomException(ITEM_NOT_FOUND));
+	}
+
+	/**
+	 * 특정 물품 정보 변경
+	 */
+	@Transactional
+	public ItemDetailResponse modifyItem (ItemModifyRequest request, Long itemId){
+		Item item = itemRepository.findById(itemId)
+			.orElseThrow(()->new CustomException(ITEM_NOT_FOUND));
+
+		item.modify(request.itemStatus(), request.itemReview());
+		itemRepository.save(item);
+
+		return ItemDetailResponse.from(item);
 	}
 }

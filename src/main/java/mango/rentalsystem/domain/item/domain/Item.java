@@ -43,5 +43,8 @@ public class Item {
 			.build();
 	}
 
-
+	public void modify(ItemStatus itemStatus, Double itemReview) {
+		this.itemStatus = itemStatus;
+		this.itemReview = itemReview;
+	}
 }
