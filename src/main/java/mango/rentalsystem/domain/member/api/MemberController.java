@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.auth.domain.LoginUser;
+import mango.rentalsystem.domain.member.dto.request.MemberInfoUpdateRequest;
 import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -20,6 +21,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -143,38 +145,13 @@ public class MemberController {
 		return ResponseEntity.ok(memberService.findMyMemberInfo(studentId));
 	}
 
-	// 현재 로그인된 멤버의 정보 수정 (Member 전용), 비밀번호를 입력해야 수정 가능
-	@PatchMapping("/myinfo")
+	// 현재 로그인된 멤버의 정보 수정 (Member 전용)
+	@PutMapping("/myinfo")
 	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<Map<String, Object>> updateMemberDetails(
-		@AuthenticationPrincipal AuthDetails authDetails,
-		@RequestParam String password,
-		@RequestBody @Valid UpdateMemberRequest request) {
-
-		String studentId = authDetails.getUsername();
-		Long memberId = memberService.findByStudentId(studentId)
-			.orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다.")).getId();
-
-		// 비밀번호 확인
-		if (!memberService.checkPassword(memberId, password)) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.singletonMap("error", "비밀번호가 일치하지 않습니다."));
-		}
-
-		// 회원 정보를 업데이트
-		memberService.updateMember(memberId, request);
-
-		// 업데이트된 회원 정보를 조회
-		Optional<Member> updatedMember = memberService.findById(memberId);
-
-		return updatedMember.map(m -> {
-			Map<String, Object> memberData = new HashMap<>();
-			memberData.put("studentId", m.getStudentId());
-			memberData.put("name", m.getName());
-			memberData.put("phone", m.getPhone());
-			memberData.put("absenceStatus", m.isAbsenceStatus());
-			memberData.put("departmentName", m.getDepartment() != null ? m.getDepartment().getName() : null);
-			return ResponseEntity.ok(memberData);
-		}).orElseGet(() -> ResponseEntity.notFound().build());
+	public ResponseEntity<Void> updateMyInfo(@LoginUser String studentId,
+		@RequestBody @Valid MemberInfoUpdateRequest request) {
+		memberService.updateMyInfo(studentId, request);
+		return ResponseEntity.ok().build();
 	}
 
 	// 현재 로그인된 멤버의 대여 중인 항목 조회 (Member 전용)

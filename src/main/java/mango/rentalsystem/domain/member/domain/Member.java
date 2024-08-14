@@ -43,7 +43,7 @@ public class Member {
 
 	private LocalDate rentalBannedDate;
 
-	@Builder
+	@Builder(access = AccessLevel.PRIVATE)
 	private Member(String studentId, String password, String name, MemberRole role, Department department, String phone,
 		String pictureUrl, Boolean absenceStatus, LocalDate rentalBannedDate) {
 		this.studentId = studentId;
@@ -55,6 +55,12 @@ public class Member {
 		this.pictureUrl = pictureUrl;
 		this.absenceStatus = absenceStatus;
 		this.rentalBannedDate = rentalBannedDate;
+	}
+
+	public void updateMemberInfo(String name, String phone, Boolean absenceStatus) {
+		this.name = name;
+		this.phone = phone;
+		this.absenceStatus = absenceStatus;
 	}
 
 	public void validateRentalBannedDate() {
