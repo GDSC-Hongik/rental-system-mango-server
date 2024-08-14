@@ -180,22 +180,4 @@ public class MemberController {
 		List<RentalFindResponse> pastRentals = memberService.getPastRentals(studentId);
 		return ResponseEntity.ok(pastRentals);
 	}
-
-	// 현재 로그인된 멤버의 정지 기간 조회 (Member 전용)
-	@GetMapping("/suspension")
-	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<String> getMySuspensionPeriod(@AuthenticationPrincipal AuthDetails authDetails) {
-		String studentId = authDetails.getUsername();
-
-		// 정지 기간을 조회
-		LocalDate rentalBannedDate = memberService.getRentalBannedDate(studentId);
-
-		// 정지 기간이 존재하는지 확인하고 적절한 응답을 반환
-		if (rentalBannedDate != null) {
-			return ResponseEntity.ok(rentalBannedDate.toString()); //
-		} else {
-			return ResponseEntity.status(HttpStatus.NOT_FOUND)
-				.body("대여가 정지되지 않았습니다");
-		}
-	}
 }

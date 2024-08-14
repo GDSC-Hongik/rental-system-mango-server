@@ -2,7 +2,7 @@ package mango.rentalsystem.domain.member.domain;
 
 import jakarta.persistence.*;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -41,11 +41,11 @@ public class Member {
 
 	private Boolean absenceStatus;
 
-	private LocalDate rentalBannedDate;
+	private LocalDateTime rentalBannedDate;
 
 	@Builder(access = AccessLevel.PRIVATE)
 	private Member(String studentId, String password, String name, MemberRole role, Department department, String phone,
-		String pictureUrl, Boolean absenceStatus, LocalDate rentalBannedDate) {
+		String pictureUrl, Boolean absenceStatus, LocalDateTime rentalBannedDate) {
 		this.studentId = studentId;
 		this.password = password;
 		this.name = name;
@@ -68,12 +68,12 @@ public class Member {
 	}
 
 	public void validateRentalBannedDate() {
-		if (!(LocalDate.now().isAfter(rentalBannedDate))) {
+		if (LocalDateTime.now().isBefore(this.rentalBannedDate)) {
 			throw new CustomException(ErrorCode.RENTAL_BANNED);
 		}
 	}
 
 	public void updateRentalBannedDate() {
-		this.rentalBannedDate = LocalDate.now().plusDays(3);
+		this.rentalBannedDate = LocalDateTime.now().plusDays(3);
 	}
 }
