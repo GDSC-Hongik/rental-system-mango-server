@@ -97,9 +97,9 @@ public class Rental {
 
 	public void updateRentalStatusToOverdue() {
 		this.rentalStatus = RentalStatus.OVERDUE;
-		this.item.updateItemStatus(ItemStatus.OVERDUE);
-		// member rentalBannedDate 설정 로직
-		// BannedDate 언제까지인지, 연장 필요한지 논의 필요
+    this.item.updateItemStatus(ItemStatus.OVERDUE);
+		this.member.updateRentalBannedDate();
+		// BannedDate 언제까지인지, 연장 필요한지 논의 필요. 현재는 연체시 3일 정지로 설정
 	}
 
 	public void updateRentalStatusToReturnRequested() {

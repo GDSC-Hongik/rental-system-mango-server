@@ -29,6 +29,7 @@ public enum ErrorCode {
 
 	// 403 FORBIDDEN
 	NOT_OPERATING_HOURS(HttpStatus.FORBIDDEN, "대여 서비스 운영 시간이 아닙니다."),
+	RENTAL_BANNED(HttpStatus.FORBIDDEN, "대여 정지 상태입니다."),
 
 	// 404 NOT_FOUND
 	MEMBER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),

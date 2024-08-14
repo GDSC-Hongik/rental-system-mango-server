@@ -13,6 +13,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 import mango.rentalsystem.domain.department.domain.Department;
 import mango.rentalsystem.domain.rental.domain.Rental;
+import mango.rentalsystem.global.exception.CustomException;
+import mango.rentalsystem.global.exception.ErrorCode;
 
 @Entity
 @Getter @Setter
@@ -54,5 +56,13 @@ public class Member {
 
 	private LocalDate rentalBannedDate;
 
+	public void validateRentalBannedDate() {
+		if (!(LocalDate.now().isAfter(rentalBannedDate))) {
+			throw new CustomException(ErrorCode.RENTAL_BANNED);
+		}
+	}
 
+	public void updateRentalBannedDate() {
+		this.rentalBannedDate = LocalDate.now().plusDays(3);
+	}
 }

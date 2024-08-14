@@ -43,7 +43,7 @@ public class RentalService {
 		Member member = memberRepository.findByStudentId(studentId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		// Member의 rentalBannedDate 검증 필요
+		member.validateRentalBannedDate();
 
 		member.getDepartment().validateRentalTime();
 
