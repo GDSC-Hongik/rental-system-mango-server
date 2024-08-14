@@ -110,14 +110,4 @@ public class CategoryService {
 		}
 	}
 
-
-
-	private void validateNoDuplicates(String categoryName, Department department) {
-		Optional<Category> existingCategory = categoryRepository.findByNameAndDepartment(categoryName, department);
-
-		if (existingCategory.isPresent()) {	// 기존에 이미 존재하는 카테고리라면
-			throw new CustomException(DUPLICATE_CATEGORY);
-		}
-	}
-
 }
