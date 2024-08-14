@@ -36,6 +36,8 @@ public class Item {
 
 	private Double itemReview;
 
+	private Integer itemRentalCount;
+
 	public static Item create(Category category, ItemStatus itemStatus, Double itemReview) {
 		return Item.builder()
 			.category(category)
@@ -44,7 +46,12 @@ public class Item {
 			.build();
 	}
 
-	public void modify(ItemStatus itemStatus) {
+	public void updateItemStatus(ItemStatus itemStatus) {
 		this.itemStatus = itemStatus;
+	}
+
+	public void updateItemReview(Integer itemReview) {
+		Double itemReviewSum = this.itemReview * this.itemRentalCount++ + itemReview;
+		this.itemReview = itemReviewSum / this.itemRentalCount;
 	}
 }
