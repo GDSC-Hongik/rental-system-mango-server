@@ -30,4 +30,12 @@ public class ItemService {
 		Item item = Item.create(category, request.itemStatus(), request.itemReview());
 		itemRepository.save(item);
 	}
+
+	/**
+	 * 특정 물품 조회
+	 */
+	public Item getItemById(Long itemId) {
+		return itemRepository.findById(itemId)
+			.orElseThrow(()->new CustomException(ITEM_NOT_FOUND));
+	}
 }
