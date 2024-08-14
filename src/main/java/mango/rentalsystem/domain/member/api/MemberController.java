@@ -58,19 +58,8 @@ public class MemberController {
 	// 특정 회원 정보 조회
 	@GetMapping("/{memberId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Map<String, Object>> getMemberById(@PathVariable Long memberId) {
-		Optional<Member> member = memberService.findById(memberId);
-
-		return member.map(m -> {
-			Map<String, Object> memberData = new HashMap<>();
-			memberData.put("studentId", m.getStudentId());
-			memberData.put("name", m.getName());
-			memberData.put("phone", m.getPhone());
-			memberData.put("absenceStatus", m.isAbsenceStatus());
-			memberData.put("rentalBannedDate", m.getRentalBannedDate());
-			memberData.put("departmentName", m.getDepartment() != null ? m.getDepartment().getName() : null);
-			return ResponseEntity.ok(memberData);
-		}).orElseGet(() -> ResponseEntity.notFound().build());
+	public ResponseEntity<MemberFindResponse> getMember(@LoginUser String studentId, @PathVariable Long memberId) {
+		return ResponseEntity.ok(memberService.findMember(studentId, memberId));
 	}
 
 	// 특정 회원 정보 수정

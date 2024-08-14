@@ -1,5 +1,6 @@
 package mango.rentalsystem.domain.member.application;
 
+import static mango.rentalsystem.domain.member.domain.MemberRole.*;
 import static mango.rentalsystem.global.exception.ErrorCode.*;
 
 import java.time.LocalDate;
@@ -12,6 +13,7 @@ import mango.rentalsystem.domain.department.domain.Department;
 import mango.rentalsystem.domain.member.dto.request.MemberInfoUpdateRequest;
 import mango.rentalsystem.domain.member.dto.request.MemberPasswordUpdateRequest;
 import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
+import mango.rentalsystem.domain.rental.domain.Rental;
 import mango.rentalsystem.global.exception.CustomException;
 import mango.rentalsystem.global.exception.ErrorCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -89,8 +91,16 @@ public class MemberService {
 	}
 
 	// 특정 회원 조회
-	public Optional<Member> findById(Long id) {
-		return memberRepository.findById(id);
+	public MemberFindResponse findMember(String studentId, Long memberId) {
+		Member member = memberRepository.findByStudentId(studentId)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+		Member targetMember = memberRepository.findById(memberId)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+		validateAuthForMember(member, targetMember);
+
+		return MemberFindResponse.from(targetMember);
 	}
 
 	// 특정 회원 삭제
@@ -187,5 +197,12 @@ public class MemberService {
 			.orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
 
 		return passwordEncoder.matches(password, member.getPassword());
+	}
+
+	private void validateAuthForMember(Member member, Member targetMember) {
+		if (member.getRole() == ROLE_MEMBER && !(targetMember.equals(member))
+			|| member.getRole() == ROLE_ADMIN && !(targetMember.getDepartment().equals(member.getDepartment()))) {
+			throw new CustomException(UNAUTHORIZED_MEMBER);
+		}
 	}
 }
