@@ -29,7 +29,7 @@ public class AuthService {
 		final String password = request.password();
 
 		Member member = memberRepository.findByStudentId(studentId)
-			.orElseThrow(() -> new CustomException(INVALID_STUDENT_ID));
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		if (!passwordEncoder.matches(password, member.getPassword())) {
 			throw new CustomException(INVALID_PASSWORD);
