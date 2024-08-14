@@ -1,12 +1,9 @@
 package mango.rentalsystem.domain.member.api;
 
-import java.time.LocalDate;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.auth.domain.LoginUser;
@@ -16,7 +13,6 @@ import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
@@ -31,8 +27,6 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.Valid;
 import mango.rentalsystem.domain.member.application.MemberService;
 import mango.rentalsystem.domain.member.domain.Member;
-import mango.rentalsystem.domain.rental.dto.response.RentalFindResponse;
-import mango.rentalsystem.global.security.AuthDetails;
 
 @RestController
 @RequestMapping("/members")
@@ -44,23 +38,8 @@ public class MemberController {
 	// 회원 조회
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<Map<String, Object>>> getAllMembers() {
-		List<Member> members = memberService.findAllMembers();
-		List<Map<String, Object>> memberDataList = members.stream()
-			.map(member -> {
-				Map<String, Object> memberData = new HashMap<>();
-				memberData.put("studentId", member.getStudentId());
-				memberData.put("name", member.getName());
-				memberData.put("phone", member.getPhone());
-				memberData.put("absenceStatus", member.isAbsenceStatus());
-				memberData.put("rentalBannedDate", member.getRentalBannedDate());
-				memberData.put("departmentName",
-					member.getDepartment() != null ? member.getDepartment().getName() : null);
-				return memberData;
-			})
-			.collect(Collectors.toList());
-
-		return ResponseEntity.ok(memberDataList);
+	public ResponseEntity<List<MemberFindResponse>> getAllMembers(@LoginUser String studentId) {
+		return ResponseEntity.ok(memberService.findAllMembers(studentId));
 	}
 
 	// 회원 추가

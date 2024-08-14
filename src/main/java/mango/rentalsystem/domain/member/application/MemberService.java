@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import mango.rentalsystem.domain.department.domain.Department;
 import mango.rentalsystem.domain.member.dto.request.MemberInfoUpdateRequest;
 import mango.rentalsystem.domain.member.dto.request.MemberPasswordUpdateRequest;
 import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
@@ -23,8 +24,6 @@ import mango.rentalsystem.domain.member.dao.MemberRepository;
 import mango.rentalsystem.domain.member.domain.Member;
 import mango.rentalsystem.domain.member.utils.CsvUtil;
 import mango.rentalsystem.domain.rental.application.RentalService;
-import mango.rentalsystem.domain.rental.domain.RentalStatus;
-import mango.rentalsystem.domain.rental.dto.response.RentalFindResponse;
 
 @Service
 @Transactional
@@ -76,8 +75,17 @@ public class MemberService {
 	}
 
 	// 모든 회원 조회
-	public List<Member> findAllMembers() {
-		return memberRepository.findAll();
+	public List<MemberFindResponse> findAllMembers(String studentId) {
+		Member member = memberRepository.findByStudentId(studentId)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+		Department department = member.getDepartment();
+
+		List<Member> allMemberList = memberRepository.findAllByDepartment(department);
+
+		return allMemberList.stream()
+			.map(MemberFindResponse::from)
+			.collect(Collectors.toList());
 	}
 
 	// 특정 회원 조회
