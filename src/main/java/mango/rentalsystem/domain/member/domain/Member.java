@@ -81,7 +81,7 @@ public class Member {
 	}
 
 	public void validateRentalBannedDate() {
-		if (LocalDateTime.now().isBefore(this.rentalBannedDate)) {
+		if (rentalBannedDate != null && LocalDateTime.now().isBefore(this.rentalBannedDate)) {
 			throw new CustomException(ErrorCode.RENTAL_BANNED);
 		}
 	}
