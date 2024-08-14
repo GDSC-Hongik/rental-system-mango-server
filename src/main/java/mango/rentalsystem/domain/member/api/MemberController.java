@@ -7,9 +7,12 @@ import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.auth.domain.LoginUser;
+import mango.rentalsystem.domain.member.dto.request.MemberCreateRequest;
 import mango.rentalsystem.domain.member.dto.request.MemberInfoUpdateRequest;
 import mango.rentalsystem.domain.member.dto.request.MemberPasswordUpdateRequest;
+import mango.rentalsystem.domain.member.dto.response.MemberCreateResponse;
 import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -45,14 +48,9 @@ public class MemberController {
 	// 회원 추가
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<?> addMember(@RequestBody Member member) {
-		try {
-			Member savedMember = memberService.saveMember(member);
-			return ResponseEntity.ok(savedMember);
-		} catch (IllegalArgumentException e) {
-			// studentId 중복 시 발생한 예외를 처리
-			return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e.getMessage());
-		}
+	public ResponseEntity<MemberCreateResponse> addMember(@LoginUser String studentId,
+		@RequestBody MemberCreateRequest request) {
+		return ResponseEntity.ok(memberService.createMember(studentId, request));
 	}
 
 	// 특정 회원 정보 조회
@@ -82,9 +80,9 @@ public class MemberController {
 	// 맨 처음 웹 실행시 ADMIN이 학생목록을 load해야 함
 	@GetMapping("/load")
 	@PreAuthorize("hasRole('ADMIN')")
-	public String loadMembers(@RequestParam String filePath) {
-		memberService.saveMembersFromCsv(filePath);
-		return "csv파일 로드 중";
+	public ResponseEntity<Void> loadMembers(@LoginUser String studentId, @RequestParam String filePath) {
+		memberService.saveMembersFromCsv(studentId, filePath);
+		return ResponseEntity.ok().build();
 	}
 
 	// 현재 로그인된 멤버의 정보 조회 (Member 전용)

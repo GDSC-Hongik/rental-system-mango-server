@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.department.domain.Department;
+import mango.rentalsystem.domain.member.dto.request.MemberCreateRequest;
 import mango.rentalsystem.domain.member.dto.request.MemberInfoUpdateRequest;
 import mango.rentalsystem.domain.member.dto.request.MemberPasswordUpdateRequest;
+import mango.rentalsystem.domain.member.dto.response.MemberCreateResponse;
 import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
 import mango.rentalsystem.domain.rental.domain.Rental;
 import mango.rentalsystem.global.exception.CustomException;
@@ -36,6 +38,17 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final RentalService rentalService;
 	private final CsvUtil csvUtil;
+
+	public MemberCreateResponse createMember(String studentId, MemberCreateRequest request) {
+		Member member = memberRepository.findByStudentId(studentId)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+		Member targetMember = Member.createMember(studentId, passwordEncoder.encode(request.phone()), request.name(),
+			member.getDepartment(), request.phone());
+
+		Member savedMember = memberRepository.save(targetMember);
+		return MemberCreateResponse.from(savedMember);
+	}
 
 	public MemberFindResponse findMyMemberInfo(String studentId) {
 		Member member = memberRepository.findByStudentId(studentId)
@@ -74,16 +87,17 @@ public class MemberService {
 		targetMember.updateMemberInfo(request.name(), request.phone(), request.absenceStatus());
 	}
 
-	public void saveMembersFromCsv(String filePath) {
-		List<Member> members = csvUtil.readMembersFromCsv(filePath);
-		for (Member member : members) {
+	public void saveMembersFromCsv(String studentId, String filePath) {
+		Member member = memberRepository.findByStudentId(studentId)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+		List<Member> members = csvUtil.readMembersFromCsv(member, filePath);
+		for (Member targetMember : members) {
 			// studentId로 중복 확인
-			Optional<Member> existingMember = memberRepository.findByStudentId(member.getStudentId());
+			Optional<Member> existingMember = memberRepository.findByStudentId(targetMember.getStudentId());
 			if (!existingMember.isPresent()) {
-
-				// 중복이 없다면 memberRepository에 새 member 추가
-				memberRepository.save(member);
-
+				// 중복이 없다면 memberRepository에 새 targetMember 추가
+				memberRepository.save(targetMember);
 			}
 		}
 	}
