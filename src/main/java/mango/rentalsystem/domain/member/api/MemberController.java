@@ -50,14 +50,14 @@ public class MemberController {
 
 	// 특정 회원 정보 조회
 	@GetMapping("/{memberId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
 	public ResponseEntity<MemberFindResponse> getMember(@LoginUser String studentId, @PathVariable Long memberId) {
 		return ResponseEntity.ok(memberService.findMember(studentId, memberId));
 	}
 
 	// 특정 회원 정보 수정
 	@PutMapping("/{memberId}")
-	@PreAuthorize("hasRole('ADMIN')")
+	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
 	public ResponseEntity<Void> updateMember(@LoginUser String studentId, @PathVariable Long memberId,
 		@RequestBody @Valid MemberInfoUpdateRequest request) {
 		memberService.updateInfo(studentId, memberId, request);
@@ -82,22 +82,23 @@ public class MemberController {
 
 	// 현재 로그인된 멤버의 정보 조회 (Member 전용)
 	@GetMapping("/myinfo")
-	@PreAuthorize("hasRole('MEMBER')")
+	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
 	public ResponseEntity<MemberFindResponse> getMyInfo(@LoginUser String studentId) {
 		return ResponseEntity.ok(memberService.findMyMemberInfo(studentId));
 	}
 
 	// 현재 로그인된 멤버의 정보 수정 (Member 전용)
 	@PutMapping("/myinfo")
-	@PreAuthorize("hasRole('MEMBER')")
+	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
 	public ResponseEntity<Void> updateMyInfo(@LoginUser String studentId,
 		@RequestBody @Valid MemberInfoUpdateRequest request) {
 		memberService.updateMyInfo(studentId, request);
 		return ResponseEntity.ok().build();
 	}
 
+	// 비밀번호 수정
 	@PatchMapping("/myinfo/password")
-	@PreAuthorize("hasRole('MEMBER')")
+	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
 	public ResponseEntity<Void> updateMyPassword(@LoginUser String studentId,
 		@RequestBody @Valid MemberPasswordUpdateRequest request) {
 		memberService.updateMyPassword(studentId, request);
