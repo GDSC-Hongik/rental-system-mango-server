@@ -54,4 +54,14 @@ public class ItemService {
 
 		return ItemDetailResponse.from(item);
 	}
+
+	/**
+	 * 특정 카테고리 삭제
+	 */
+	@Transactional
+	public void deleteItem(Long itemId) {
+		itemRepository.findById(itemId)
+			.orElseThrow(()->new CustomException(ITEM_NOT_FOUND));
+		itemRepository.deleteById(itemId);
+	}
 }
