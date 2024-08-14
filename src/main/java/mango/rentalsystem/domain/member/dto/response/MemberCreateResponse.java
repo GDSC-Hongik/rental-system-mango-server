@@ -1,7 +1,5 @@
 package mango.rentalsystem.domain.member.dto.response;
 
-import java.time.LocalDateTime;
-
 import mango.rentalsystem.domain.member.domain.Member;
 import mango.rentalsystem.domain.member.domain.MemberRole;
 

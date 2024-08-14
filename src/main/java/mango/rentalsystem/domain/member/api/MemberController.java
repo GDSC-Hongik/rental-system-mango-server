@@ -1,9 +1,6 @@
 package mango.rentalsystem.domain.member.api;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.auth.domain.LoginUser;
@@ -13,7 +10,6 @@ import mango.rentalsystem.domain.member.dto.request.MemberPasswordUpdateRequest;
 import mango.rentalsystem.domain.member.dto.response.MemberCreateResponse;
 import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,7 +25,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import mango.rentalsystem.domain.member.application.MemberService;
-import mango.rentalsystem.domain.member.domain.Member;
 
 @RestController
 @RequestMapping("/members")
