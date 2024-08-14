@@ -29,7 +29,7 @@ public class ItemService {
 		Category category = categoryRepository.findById(request.categoryId())
 			.orElseThrow(()->new CustomException(CATEGORY_NOT_FOUND));
 
-		Item item = Item.create(category, request.itemStatus(), request.itemReview());
+		Item item = Item.create(category);
 		itemRepository.save(item);
 	}
 
@@ -49,7 +49,7 @@ public class ItemService {
 		Item item = itemRepository.findById(itemId)
 			.orElseThrow(()->new CustomException(ITEM_NOT_FOUND));
 
-		item.modify(request.itemStatus());
+		item.updateItemStatus(request.itemStatus());
 		itemRepository.save(item);
 
 		return ItemDetailResponse.from(item);

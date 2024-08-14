@@ -10,6 +10,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import mango.rentalsystem.domain.department.domain.DailyRentalTime;
 import mango.rentalsystem.domain.item.domain.Item;
+import mango.rentalsystem.domain.item.domain.ItemStatus;
 import mango.rentalsystem.domain.member.domain.Member;
 
 @Entity
@@ -75,27 +76,28 @@ public class Rental {
 
 	public void updateRentalStatusToCanceled() {
 		this.rentalStatus = RentalStatus.CANCELED;
-		// itemStatus IDLE 으로 만드는 로직
+		this.item.updateItemStatus(ItemStatus.IDLE);
 	}
 
 	public void updateRentalStatusToApproved() {
 		this.rentalStatus = RentalStatus.APPROVED;
-		// itemStatus BOOK 으로 만드는 로직
+		this.item.updateItemStatus(ItemStatus.BOOK);
 	}
 
 	public void updateRentalStatusToRejected() {
 		this.rentalStatus = RentalStatus.REJECTED;
-		// itemStatus IDLE 으로 만드는 로직
+		this.item.updateItemStatus(ItemStatus.IDLE);
 	}
 
 	public void updateRentalStatusToBorrow() {
 		this.rentalStatus = RentalStatus.BORROW;
 		this.borrowDateTime = LocalDateTime.now();
-		// itemStatus BORROW 으로 만드는 로직
+		this.item.updateItemStatus(ItemStatus.BORROW);
 	}
 
 	public void updateRentalStatusToOverdue() {
 		this.rentalStatus = RentalStatus.OVERDUE;
+    this.item.updateItemStatus(ItemStatus.OVERDUE);
 		this.member.updateRentalBannedDate();
 		// BannedDate 언제까지인지, 연장 필요한지 논의 필요. 현재는 연체시 3일 정지로 설정
 	}
@@ -107,11 +109,11 @@ public class Rental {
 	public void updateRentalStatusToReturn() {
 		this.rentalStatus = RentalStatus.RETURN;
 		this.returnDateTime = LocalDateTime.now();
-		// itemStatus IDLE 으로 만드는 로직
+		this.item.updateItemStatus(ItemStatus.IDLE);
 	}
 
 	public void updateRentalReview(Integer rentalReview) {
 		this.rentalReview = rentalReview;
-		// item averageReview 수정 로직
+		this.item.updateItemReview(rentalReview);
 	}
 }

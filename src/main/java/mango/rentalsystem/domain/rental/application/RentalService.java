@@ -17,6 +17,7 @@ import mango.rentalsystem.domain.department.domain.DailyRentalTime;
 import mango.rentalsystem.domain.department.domain.Department;
 import mango.rentalsystem.domain.item.dao.ItemRepository;
 import mango.rentalsystem.domain.item.domain.Item;
+import mango.rentalsystem.domain.item.domain.ItemStatus;
 import mango.rentalsystem.domain.member.dao.MemberRepository;
 import mango.rentalsystem.domain.member.domain.Member;
 import mango.rentalsystem.domain.rental.dao.RentalRepository;
@@ -44,22 +45,19 @@ public class RentalService {
 
 		member.validateRentalBannedDate();
 
-		DailyRentalTime todayRentalTime = member.getDepartment().getTodayRentalTime();
-
-		if (LocalTime.now().isBefore(todayRentalTime.getRentalStartTime()) ||
-			LocalTime.now().isAfter(todayRentalTime.getRentalEndTime())) {
-			throw new CustomException(NOT_OPERATING_HOURS);
-		} // 검증 편의 메서드 Department에 추가 예정
+		member.getDepartment().validateRentalTime();
 
 		Item item = itemRepository.findById(request.itemId())
 			.orElseThrow(() -> new CustomException(ITEM_NOT_FOUND));
 
+		// item 예외 처리 로직
 		if (!(member.getDepartment().equals(item.getCategory().getDepartment()))) {
 			throw new CustomException(UNAUTHORIZED_ITEM);
 		}
-
-		// itemStatus가 IDLE인지 검증하는 메서드
-		// itemStatus를 BOOK으로 변경하는 메서드
+		if (item.getItemStatus() != ItemStatus.IDLE) {
+			throw new CustomException(INVALID_ITEM_STATUS);
+		}
+		item.updateItemStatus(ItemStatus.BOOK);
 
 		Rental rental = Rental.createInitialRental(member, item);
 		Rental savedRental = rentalRepository.save(rental);
@@ -111,12 +109,7 @@ public class RentalService {
 		Member member = memberRepository.findByStudentId(studentId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		DailyRentalTime todayRentalTime = member.getDepartment().getTodayRentalTime();
-
-		if (LocalTime.now().isBefore(todayRentalTime.getRentalStartTime()) ||
-			LocalTime.now().isAfter(todayRentalTime.getRentalEndTime())) {
-			throw new CustomException(NOT_OPERATING_HOURS);
-		} // 검증 편의 메서드 Department에 추가 예정
+		member.getDepartment().validateRentalTime();
 
 		Rental rental = rentalRepository.findById(rentalId)
 			.orElseThrow(() -> new CustomException(RENTAL_NOT_FOUND));
