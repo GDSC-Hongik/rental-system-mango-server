@@ -63,40 +63,20 @@ public class MemberController {
 	}
 
 	// 특정 회원 정보 수정
-	@PatchMapping("/{memberId}")
+	@PutMapping("/{memberId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Map<String, Object>> updateMember(@PathVariable("memberId") Long memberId,
-		@RequestBody @Valid UpdateMemberRequestByAdmin request) {
-
-		// 회원 정보를 업데이트
-		memberService.updateMemberByAdmin(memberId, request);
-
-		// 업데이트된 회원 정보를 조회
-		Optional<Member> updatedMember = memberService.findById(memberId);
-
-		return updatedMember.map(m -> {
-			Map<String, Object> memberData = new HashMap<>();
-			memberData.put("studentId", m.getStudentId());
-			memberData.put("name", m.getName());
-			memberData.put("phone", m.getPhone());
-			memberData.put("absenceStatus", m.isAbsenceStatus());
-			memberData.put("rentalBannedDate", m.getRentalBannedDate());
-			memberData.put("departmentName", m.getDepartment() != null ? m.getDepartment().getName() : null);
-			return ResponseEntity.ok(memberData);
-		}).orElseGet(() -> ResponseEntity.notFound().build());
+	public ResponseEntity<Void> updateMember(@LoginUser String studentId, @PathVariable Long memberId,
+		@RequestBody @Valid MemberInfoUpdateRequest request) {
+		memberService.updateInfo(studentId, memberId, request);
+		return ResponseEntity.ok().build();
 	}
 
 	// 특정 회원 정보 삭제
 	@DeleteMapping("/{memberId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Void> deleteMember(@PathVariable Long memberId) {
-		Optional<Member> member = memberService.findById(memberId);
-		if (member.isPresent()) {
-			memberService.deleteMember(memberId);
-			return ResponseEntity.ok().build();
-		} else {
-			return ResponseEntity.notFound().build();
-		}
+	public ResponseEntity<Void> deleteMember(@LoginUser String studentId, @PathVariable Long memberId) {
+		memberService.deleteMember(studentId, memberId);
+		return ResponseEntity.ok().build();
 	}
 
 	// 맨 처음 웹 실행시 ADMIN이 학생목록을 load해야 함

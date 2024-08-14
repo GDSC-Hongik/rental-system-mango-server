@@ -62,6 +62,18 @@ public class MemberService {
 		member.updateMemberPassword(passwordEncoder.encode(request.newPassword()));
 	}
 
+	public void updateInfo(String studentId, Long memberId, MemberInfoUpdateRequest request) {
+		Member member = memberRepository.findByStudentId(studentId)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+		Member targetMember = memberRepository.findById(memberId)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+		validateAuthForMember(member, targetMember);
+
+		targetMember.updateMemberInfo(request.name(), request.phone(), request.absenceStatus());
+	}
+
 	public void saveMembersFromCsv(String filePath) {
 		List<Member> members = csvUtil.readMembersFromCsv(filePath);
 		for (Member member : members) {
@@ -104,8 +116,16 @@ public class MemberService {
 	}
 
 	// 특정 회원 삭제
-	public void deleteMember(Long id) {
-		memberRepository.deleteById(id);
+	public void deleteMember(String studentId, Long memberId) {
+		Member member = memberRepository.findByStudentId(studentId)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+		Member targetMember = memberRepository.findById(memberId)
+			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
+
+		validateAuthForMember(member, targetMember);
+
+		memberRepository.delete(targetMember);
 	}
 
 	// 회원 ID로 조회
