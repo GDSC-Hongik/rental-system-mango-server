@@ -1,9 +1,9 @@
 package mango.rentalsystem.domain.item.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.Id;
@@ -31,9 +31,12 @@ public class Item {
 	@JoinColumn(name = "category_id")
 	private Category category;
 
+	@Enumerated(EnumType.STRING)
 	private ItemStatus itemStatus;
 
 	private Double itemReview;
+
+	private Integer itemRentalCount;
 
 	public static Item create(Category category, ItemStatus itemStatus, Double itemReview) {
 		return Item.builder()
@@ -43,7 +46,12 @@ public class Item {
 			.build();
 	}
 
-	public void modify(ItemStatus itemStatus) {
+	public void updateItemStatus(ItemStatus itemStatus) {
 		this.itemStatus = itemStatus;
+	}
+
+	public void updateItemReview(Integer itemReview) {
+		Double itemReviewSum = this.itemReview * this.itemRentalCount++ + itemReview;
+		this.itemReview = itemReviewSum / this.itemRentalCount;
 	}
 }
