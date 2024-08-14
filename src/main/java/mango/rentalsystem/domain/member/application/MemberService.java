@@ -6,6 +6,9 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
+import mango.rentalsystem.global.exception.CustomException;
+import mango.rentalsystem.global.exception.ErrorCode;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +31,13 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final RentalService rentalService;
 	private final CsvUtil csvUtil;
+
+	public MemberFindResponse findMyMemberInfo(String studentId) {
+		Member member = memberRepository.findByStudentId(studentId)
+				.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+
+		return MemberFindResponse.from(member);
+	}
 
 	public void saveMembersFromCsv(String filePath) {
 		List<Member> members = csvUtil.readMembersFromCsv(filePath);

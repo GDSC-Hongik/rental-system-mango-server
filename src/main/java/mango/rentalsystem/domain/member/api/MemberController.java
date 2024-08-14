@@ -9,6 +9,8 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 import lombok.RequiredArgsConstructor;
+import mango.rentalsystem.domain.auth.domain.LoginUser;
+import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -134,32 +136,11 @@ public class MemberController {
 		return "csv파일 로드 중";
 	}
 
-	// 현재 로그인된 멤버의 정보 조회 (Member 전용) , 비밀번호를 입력해야 정보 조회 가능
-	@GetMapping("/myinfo")@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<Map<String, Object>> getMyInfo(
-		@AuthenticationPrincipal AuthDetails authDetails,
-		@RequestParam String password) {
-
-		String studentId = authDetails.getUsername();
-		Long memberId = memberService.findByStudentId(studentId)
-			.orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다.")).getId();
-
-		// 비밀번호 확인
-		if (!memberService.checkPassword(memberId, password)) {
-			return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.singletonMap("error", "비밀번호가 일치하지 않습니다."));
-		}
-
-		Optional<Member> member = memberService.findByStudentId(studentId);
-
-		return member.map(m -> {
-			Map<String, Object> memberData = new HashMap<>();
-			memberData.put("studentId", m.getStudentId());
-			memberData.put("name", m.getName());
-			memberData.put("phone", m.getPhone());
-			memberData.put("absenceStatus", m.isAbsenceStatus());
-			memberData.put("departmentName", m.getDepartment() != null ? m.getDepartment().getName() : null);
-			return ResponseEntity.ok(memberData);
-		}).orElseGet(() -> ResponseEntity.notFound().build());
+	// 현재 로그인된 멤버의 정보 조회 (Member 전용)
+	@GetMapping("/myinfo")
+	@PreAuthorize("hasRole('MEMBER')")
+	public ResponseEntity<MemberFindResponse> getMyInfo(@LoginUser String studentId) {
+		return ResponseEntity.ok(memberService.findMyMemberInfo(studentId));
 	}
 
 	// 현재 로그인된 멤버의 정보 수정 (Member 전용), 비밀번호를 입력해야 수정 가능
