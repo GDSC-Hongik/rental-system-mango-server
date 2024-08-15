@@ -20,16 +20,13 @@ public class Category {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "category_id")
-	@NotNull
 	private Long id;
 
-	@NotNull
 	@Column(unique = true)
 	private String name;
 
 	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "department_id")
-	@NotNull
 	private Department department;
 
 	private String description;
