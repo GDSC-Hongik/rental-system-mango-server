@@ -1,6 +1,5 @@
 package mango.rentalsystem.domain.category.application;
 
-import static mango.rentalsystem.domain.member.domain.MemberRole.*;
 import static mango.rentalsystem.global.exception.ErrorCode.*;
 
 import java.util.List;
@@ -18,14 +17,9 @@ import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.request.CategoryModifyRequest;
 import mango.rentalsystem.domain.category.dto.response.CategoryDetailResponse;
 import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
-import mango.rentalsystem.domain.department.dao.DepartmentRepository;
 import mango.rentalsystem.domain.department.domain.Department;
-import mango.rentalsystem.domain.item.dao.ItemRepository;
 import mango.rentalsystem.domain.member.dao.MemberRepository;
 import mango.rentalsystem.domain.member.domain.Member;
-import mango.rentalsystem.domain.rental.domain.Rental;
-import mango.rentalsystem.domain.rental.domain.RentalStatus;
-import mango.rentalsystem.domain.rental.dto.response.RentalFindResponse;
 import mango.rentalsystem.global.exception.CustomException;
 
 @Slf4j
@@ -36,8 +30,6 @@ public class CategoryService {
 
 	private final MemberRepository memberRepository;
 	private final CategoryRepository categoryRepository;
-	private final DepartmentRepository departmentRepository;
-	private final ItemRepository itemRepository;
 
 	/**
 	 * 카테고리 전체 조회
@@ -84,7 +76,7 @@ public class CategoryService {
 
 	/**
 	 * 특정 카테고리 조회
-	*/
+	 */
 	public CategoryDetailResponse getCategoryById(String loginId, Long categoryId) {
 		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
@@ -101,7 +93,7 @@ public class CategoryService {
 	 * 특정 카테고리 정보 변경
 	 */
 	@Transactional
-	public CategorySummaryResponse modifyCategory (String loginId, CategoryModifyRequest request, Long categoryId) {
+	public CategorySummaryResponse modifyCategory(String loginId, CategoryModifyRequest request, Long categoryId) {
 		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
@@ -133,11 +125,10 @@ public class CategoryService {
 		categoryRepository.deleteById(categoryId);
 	}
 
-
 	private void validateNoDuplicates(String categoryName, Department department) {
 		Optional<Category> existingCategory = categoryRepository.findByNameAndDepartment(categoryName, department);
 
-		if (existingCategory.isPresent()) {	// 기존에 이미 존재하는 카테고리라면
+		if (existingCategory.isPresent()) {    // 기존에 이미 존재하는 카테고리라면
 			throw new CustomException(DUPLICATE_CATEGORY);
 		}
 	}

@@ -15,7 +15,6 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.auth.domain.LoginUser;
 import mango.rentalsystem.domain.item.application.ItemService;
-import mango.rentalsystem.domain.item.domain.Item;
 import mango.rentalsystem.domain.item.dto.request.ItemCreateRequest;
 import mango.rentalsystem.domain.item.dto.request.ItemModifyRequest;
 import mango.rentalsystem.domain.item.dto.response.ItemDetailResponse;
@@ -28,7 +27,7 @@ public class ItemController {
 	private final ItemService itemService;
 
 	// 아이템 추가
-	@PreAuthorize("hasRole('ADMIN')")	// ADMIN 검사
+	@PreAuthorize("hasRole('ADMIN')") // ADMIN 검사
 	@PostMapping
 	public ResponseEntity<Void> createItem(@LoginUser String loginId, @Valid @RequestBody ItemCreateRequest request) {
 		itemService.createItem(loginId, request);
@@ -38,7 +37,7 @@ public class ItemController {
 	// 특정 물품 정보 조회
 	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
 	@GetMapping("/{itemId}")
-	public ResponseEntity<ItemDetailResponse> getItemDetail(@LoginUser String loginId, @PathVariable Long itemId){
+	public ResponseEntity<ItemDetailResponse> getItemDetail(@LoginUser String loginId, @PathVariable Long itemId) {
 		return ResponseEntity.ok(itemService.getItemById(loginId, itemId));
 	}
 

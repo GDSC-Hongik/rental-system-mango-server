@@ -4,8 +4,6 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import mango.rentalsystem.domain.item.domain.Item;
-import mango.rentalsystem.domain.member.domain.Member;
 import mango.rentalsystem.domain.rental.domain.Rental;
 import mango.rentalsystem.domain.rental.domain.RentalStatus;
 
@@ -34,6 +32,7 @@ public record RentalFindResponse(
 			rental.getBorrowDateTime(),
 			rental.getReturnDateTime(),
 			rental.getDeadlineDateTime(),
-			rental.getRentalReview());
+			rental.getRentalReview()
+		);
 	}
 }

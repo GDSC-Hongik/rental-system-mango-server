@@ -20,6 +20,7 @@ public record MemberCreateResponse(
 			member.getRole(),
 			member.getDepartment().getName(),
 			member.getPhone(),
-			member.getAbsenceStatus());
+			member.getAbsenceStatus()
+		);
 	}
 }

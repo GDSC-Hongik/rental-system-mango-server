@@ -34,7 +34,7 @@ public class ItemService {
 
 		// Category 객체 조회
 		Category category = categoryRepository.findById(request.categoryId())
-			.orElseThrow(()->new CustomException(CATEGORY_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(CATEGORY_NOT_FOUND));
 
 		validateAuthForCategory(member, category);
 
@@ -50,7 +50,7 @@ public class ItemService {
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Item item = itemRepository.findById(itemId)
-			.orElseThrow(()->new CustomException(ITEM_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(ITEM_NOT_FOUND));
 
 		validateAuthForCategory(member, item.getCategory());
 
@@ -61,12 +61,12 @@ public class ItemService {
 	 * 특정 물품 정보 변경
 	 */
 	@Transactional
-	public ItemDetailResponse modifyItem (String loginId, ItemModifyRequest request, Long itemId){
+	public ItemDetailResponse modifyItem(String loginId, ItemModifyRequest request, Long itemId) {
 		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Item item = itemRepository.findById(itemId)
-			.orElseThrow(()->new CustomException(ITEM_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(ITEM_NOT_FOUND));
 
 		validateAuthForCategory(member, item.getCategory());
 
@@ -85,7 +85,7 @@ public class ItemService {
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Item item = itemRepository.findById(itemId)
-			.orElseThrow(()->new CustomException(ITEM_NOT_FOUND));
+			.orElseThrow(() -> new CustomException(ITEM_NOT_FOUND));
 
 		validateAuthForCategory(member, item.getCategory());
 

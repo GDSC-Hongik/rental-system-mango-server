@@ -20,7 +20,7 @@ public class CategoryDetailResponse {
 	private String description;
 	private List<ItemResponse> items;
 
-	public static CategoryDetailResponse from (Category category) {
+	public static CategoryDetailResponse from(Category category) {
 		List<ItemResponse> itemResponses = category.getItems() != null
 			? category.getItems().stream()
 			.map(ItemResponse::from)

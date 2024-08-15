@@ -18,7 +18,7 @@ import mango.rentalsystem.global.exception.ErrorCode;
 public class Member {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "member_id")
 	private Long id;
 
@@ -64,6 +64,19 @@ public class Member {
 			.password(password)
 			.name(name)
 			.role(MemberRole.ROLE_MEMBER)
+			.department(department)
+			.phone(phone)
+			.absenceStatus(false)
+			.build();
+	}
+
+	public static Member createAdmin(String studentId, String password, String name, Department department,
+		String phone) {
+		return Member.builder()
+			.studentId(studentId)
+			.password(password)
+			.name(name)
+			.role(MemberRole.ROLE_ADMIN)
 			.department(department)
 			.phone(phone)
 			.absenceStatus(false)

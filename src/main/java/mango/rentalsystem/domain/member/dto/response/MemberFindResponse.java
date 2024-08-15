@@ -17,12 +17,12 @@ public record MemberFindResponse(
 
 	public static MemberFindResponse from(Member member) {
 		return new MemberFindResponse(
-            member.getStudentId(),
-            member.getName(),
+			member.getStudentId(),
+			member.getName(),
 			member.getDepartment().getName(),
-            member.getPhone(),
-            member.getAbsenceStatus(),
+			member.getPhone(),
+			member.getAbsenceStatus(),
 			member.getRentalBannedDate()
-        );
+		);
 	}
 }

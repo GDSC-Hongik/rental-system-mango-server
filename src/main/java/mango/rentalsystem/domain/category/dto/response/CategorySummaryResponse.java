@@ -5,8 +5,8 @@ import mango.rentalsystem.domain.category.domain.Category;
 public record CategorySummaryResponse(
 	Long categoryId,
 	String name,
-	String description
-) {
+	String description) {
+
 	public static CategorySummaryResponse from(Category category) {
 		return new CategorySummaryResponse(
 			category.getId(),

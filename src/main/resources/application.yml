@@ -1,13 +1,18 @@
 spring:
-  datasource: # Test용 h2 데이터베이스. MySQL로 전환 예정
-    url: jdbc:h2:tcp://localhost/~/jwttest
-    username: sa
-    password:
-    driver-class-name: org.h2.Driver
+#  datasource: # Test용 h2 데이터베이스. MySQL로 전환 예정
+#    url: jdbc:h2:tcp://localhost/~/jwttest
+#    username: sa
+#    password:
+#    driver-class-name: org.h2.Driver
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: jdbc:mysql://172.17.0.3:3306/login?serverTimezone=Asia/Seoul
+    username: root
+    password: 0000
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: none
     properties:
       hibernate:
         # show_sql: true
