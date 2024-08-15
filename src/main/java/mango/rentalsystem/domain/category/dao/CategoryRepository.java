@@ -1,5 +1,6 @@
 package mango.rentalsystem.domain.category.dao;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,5 @@ public interface CategoryRepository extends JpaRepository<Category, Long> {
 
 	Optional<Category> findByNameAndDepartment(String categoryName, Department department);
 
-	Optional<Category> findById(Long categoryId);
-
-	void deleteById(Long categoryId);
+	List<Category> findAllByDepartment(Department department);
 }
