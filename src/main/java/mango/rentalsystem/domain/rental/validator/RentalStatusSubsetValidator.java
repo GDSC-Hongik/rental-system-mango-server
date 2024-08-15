@@ -5,7 +5,6 @@ import static mango.rentalsystem.domain.member.domain.MemberRole.*;
 import java.util.Arrays;
 
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 
 import jakarta.validation.ConstraintValidator;
@@ -27,12 +26,10 @@ public class RentalStatusSubsetValidator implements ConstraintValidator<RentalSt
 	@Override
 	public boolean isValid(RentalStatus rentalStatus, ConstraintValidatorContext context) {
 		MemberRole memberRole = currentMemberRole();
-		if (
-			(memberRole == ROLE_MEMBER)
-				&& !(memberSubset == null || Arrays.asList(memberSubset).contains(rentalStatus))
+		if ((memberRole == ROLE_MEMBER)
+			&& !(memberSubset == null || Arrays.asList(memberSubset).contains(rentalStatus))
 			|| (memberRole == ROLE_ADMIN)
-				&& !(adminSubset == null || Arrays.asList(adminSubset).contains(rentalStatus))
-		) {
+			&& !(adminSubset == null || Arrays.asList(adminSubset).contains(rentalStatus))) {
 			setRoleErrorMessage(context, memberRole);
 			return false;
 		}

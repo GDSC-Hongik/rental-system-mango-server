@@ -39,11 +39,7 @@ public class Category {
 	private List<Item> items = new ArrayList<>();
 
 	@Builder(access = AccessLevel.PRIVATE)
-	private	Category(
-		String name,
-		String description,
-		Department department
-		) {
+	private Category(String name, String description, Department department) {
 		this.name = name;
 		this.description = description;
 		this.department = department;

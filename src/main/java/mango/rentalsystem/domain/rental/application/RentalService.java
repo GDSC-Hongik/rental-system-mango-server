@@ -4,8 +4,6 @@ import static mango.rentalsystem.domain.member.domain.MemberRole.*;
 import static mango.rentalsystem.global.exception.ErrorCode.*;
 
 import java.time.LocalDateTime;
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -14,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import lombok.RequiredArgsConstructor;
-import mango.rentalsystem.domain.department.domain.DailyRentalTime;
 import mango.rentalsystem.domain.department.domain.Department;
 import mango.rentalsystem.domain.item.dao.ItemRepository;
 import mango.rentalsystem.domain.item.domain.Item;

@@ -2,8 +2,6 @@ package mango.rentalsystem.domain.category.api;
 
 import java.util.List;
 
-import javax.xml.transform.Result;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,10 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import mango.rentalsystem.domain.auth.domain.LoginUser;
 import mango.rentalsystem.domain.category.application.CategoryService;
-import mango.rentalsystem.domain.category.domain.Category;
 import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.request.CategoryModifyRequest;
 import mango.rentalsystem.domain.category.dto.response.CategoryDetailResponse;
