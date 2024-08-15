@@ -35,7 +35,7 @@ public class Category {
 	private String description;
 	// description: 22년형 macbook air 14인치
 
-	@OneToMany(mappedBy = "category")
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Item> items = new ArrayList<>();
 
 	@Builder(access = AccessLevel.PRIVATE)

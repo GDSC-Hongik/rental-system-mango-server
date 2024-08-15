@@ -24,7 +24,7 @@ public class DepartmentController {
 	private final DepartmentService departmentService;
 
 	@GetMapping
-	@PreAuthorize("hasRole('MEMBER')")
+	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
 	public ResponseEntity<DepartmentResponse> getDepartment(@LoginUser String loginId) {
 		return ResponseEntity.ok(departmentService.getDepartment(loginId));
 	}

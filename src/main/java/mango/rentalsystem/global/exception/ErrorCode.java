@@ -24,6 +24,7 @@ public enum ErrorCode {
 	UNKNOWN_TOKEN(HttpStatus.UNAUTHORIZED, "인증 토큰이 존재하지 않습니다."),
 	INVALID_REFRESH_TOKEN(HttpStatus.UNAUTHORIZED, "유효하지 않은 Refresh Token입니다."),
 	INVALID_PASSWORD(HttpStatus.UNAUTHORIZED, "비밀번호가 일치하지 않습니다."),
+	UNAUTHORIZED_CATEGORY(HttpStatus.UNAUTHORIZED, "이 카테고리에 접근할 권한이 없습니다."),
 	UNAUTHORIZED_ITEM(HttpStatus.UNAUTHORIZED, "이 물품에 접근할 권한이 없습니다."),
 	UNAUTHORIZED_RENTAL(HttpStatus.UNAUTHORIZED, "이 대여에 접근할 권한이 없습니다."),
 	UNAUTHORIZED_MEMBER(HttpStatus.UNAUTHORIZED, "이 회원에 접근할 권한이 없습니다."),

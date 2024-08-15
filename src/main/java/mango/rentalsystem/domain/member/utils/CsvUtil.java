@@ -31,7 +31,7 @@ public class CsvUtil {
 				Member targetMember = Member.createMember(studentId, passwordEncoder.encode(phone), name,
 					member.getDepartment(), phone);
 
-				members.add(member);
+				members.add(targetMember);
 			}
 		} catch (IOException | CsvException e) {
 			e.printStackTrace();
