@@ -86,17 +86,21 @@ public class RentalService {
 			.collect(Collectors.toList());
 	}
 
-	public List<RentalFindResponse> findMyRental(String studentId) {
+	public List<RentalFindResponse> findMyRental(String studentId, RentalFindRequest request) {
 		Member member = memberRepository.findByStudentId(studentId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		List<Rental> myRentalList = rentalRepository.findAllByMember(member);
-
-		List<RentalFindResponse> response = new ArrayList<>();
-		for (Rental rental : myRentalList) {
-			response.add(RentalFindResponse.from(rental));
+		List<Rental> myRentalList;
+		List<RentalStatus> rentalStatuses = request.rentalStatuses();
+		if (rentalStatuses == null) {
+			myRentalList = rentalRepository.findAllByMember(member);
+		} else {
+			myRentalList = rentalRepository.findAllByRentalStatusInAndMember(rentalStatuses, member);
 		}
-		return response;
+
+		return myRentalList.stream()
+			.map(RentalFindResponse::from)
+			.collect(Collectors.toList());
 	}
 
 	public RentalFindResponse findRental(String studentId, Long rentalId) {

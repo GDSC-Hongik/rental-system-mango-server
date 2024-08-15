@@ -17,6 +17,8 @@ public interface RentalRepository extends JpaRepository<Rental, Long> {
 
 	List<Rental> findAllByMember(Member member);
 
+	List<Rental> findAllByRentalStatusInAndMember(List<RentalStatus> rentalStatuses, Member member);
+
 	List<Rental> findAllByMemberDepartment(Department department);
 
 	List<Rental> findAllByRentalStatusInAndMemberDepartment(List<RentalStatus> rentalStatuses, Department department);

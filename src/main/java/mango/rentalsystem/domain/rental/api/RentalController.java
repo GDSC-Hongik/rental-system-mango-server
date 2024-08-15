@@ -48,8 +48,9 @@ public class RentalController {
 	// 페이지네이션 필요할 수도 있음
 	@GetMapping("/myrental")
 	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<List<RentalFindResponse>> getMyRental(@LoginUser String studentId) {
-		return ResponseEntity.ok(rentalService.findMyRental(studentId));
+	public ResponseEntity<List<RentalFindResponse>> getMyRental(@LoginUser String studentId,
+		@RequestBody(required = false) RentalFindRequest request) {
+		return ResponseEntity.ok(rentalService.findMyRental(studentId, request));
 	}
 
 	@GetMapping("/{rentalId}")
