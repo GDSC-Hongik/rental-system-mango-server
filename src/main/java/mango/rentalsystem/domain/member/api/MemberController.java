@@ -49,26 +49,26 @@ public class MemberController {
 	}
 
 	// 특정 회원 정보 조회
-	@GetMapping("/{memberId}")
+	@GetMapping("/{studentId}")
 	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
-	public ResponseEntity<MemberFindResponse> getMember(@LoginUser String loginId, @PathVariable Long memberId) {
-		return ResponseEntity.ok(memberService.findMember(loginId, memberId));
+	public ResponseEntity<MemberFindResponse> getMember(@LoginUser String loginId, @PathVariable String studentId) {
+		return ResponseEntity.ok(memberService.findMember(loginId, studentId));
 	}
 
 	// 특정 회원 정보 수정
-	@PutMapping("/{memberId}")
+	@PutMapping("/{studentId}")
 	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
-	public ResponseEntity<Void> updateMember(@LoginUser String loginId, @PathVariable Long memberId,
+	public ResponseEntity<Void> updateMember(@LoginUser String loginId, @PathVariable String studentId,
 		@RequestBody @Valid MemberInfoUpdateRequest request) {
-		memberService.updateInfo(loginId, memberId, request);
+		memberService.updateInfo(loginId, studentId, request);
 		return ResponseEntity.ok().build();
 	}
 
 	// 특정 회원 정보 삭제
-	@DeleteMapping("/{memberId}")
+	@DeleteMapping("/{studentId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Void> deleteMember(@LoginUser String loginId, @PathVariable Long memberId) {
-		memberService.deleteMember(loginId, memberId);
+	public ResponseEntity<Void> deleteMember(@LoginUser String loginId, @PathVariable String studentId) {
+		memberService.deleteMember(loginId, studentId);
 		return ResponseEntity.ok().build();
 	}
 

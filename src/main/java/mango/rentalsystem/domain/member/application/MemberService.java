@@ -70,11 +70,11 @@ public class MemberService {
 		member.updateMemberPassword(passwordEncoder.encode(request.newPassword()));
 	}
 
-	public void updateInfo(String loginId, Long memberId, MemberInfoUpdateRequest request) {
+	public void updateInfo(String loginId, String studentId, MemberInfoUpdateRequest request) {
 		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
-		Member targetMember = memberRepository.findById(memberId)
+		Member targetMember = memberRepository.findByStudentId(studentId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		validateAuthForMember(member, targetMember);
@@ -90,7 +90,7 @@ public class MemberService {
 		for (Member targetMember : members) {
 			// studentId로 중복 확인
 			Optional<Member> existingMember = memberRepository.findByStudentId(targetMember.getStudentId());
-			if (!existingMember.isPresent()) {
+			if (existingMember.isEmpty()) {
 				// 중복이 없다면 memberRepository에 새 targetMember 추가
 				memberRepository.save(targetMember);
 			}
@@ -112,11 +112,11 @@ public class MemberService {
 	}
 
 	// 특정 회원 조회
-	public MemberFindResponse findMember(String loginId, Long memberId) {
+	public MemberFindResponse findMember(String loginId, String studentId) {
 		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		Member targetMember = memberRepository.findById(memberId)
+		Member targetMember = memberRepository.findByStudentId(studentId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		validateAuthForMember(member, targetMember);
@@ -125,11 +125,11 @@ public class MemberService {
 	}
 
 	// 특정 회원 삭제
-	public void deleteMember(String loginId, Long memberId) {
+	public void deleteMember(String loginId, String studentId) {
 		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		Member targetMember = memberRepository.findById(memberId)
+		Member targetMember = memberRepository.findByStudentId(studentId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		validateAuthForMember(member, targetMember);
