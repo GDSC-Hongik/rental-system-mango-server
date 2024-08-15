@@ -5,7 +5,6 @@ import mango.rentalsystem.domain.member.domain.MemberRole;
 
 public record MemberCreateResponse(
 	String studentId,
-	String password,
 	String name,
 	MemberRole role,
 	String departmentName,
@@ -15,7 +14,6 @@ public record MemberCreateResponse(
 	public static MemberCreateResponse from(Member member) {
 		return new MemberCreateResponse(
 			member.getStudentId(),
-			member.getPassword(),
 			member.getName(),
 			member.getRole(),
 			member.getDepartment().getName(),

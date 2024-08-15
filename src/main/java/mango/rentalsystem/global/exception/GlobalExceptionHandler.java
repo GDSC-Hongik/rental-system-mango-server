@@ -4,6 +4,7 @@ import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -29,6 +30,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 			.body(ErrorResponse.of(ErrorCode.INTERNAL_SERVER_ERROR));
 	}
 
+	@ExceptionHandler(AuthorizationDeniedException.class)
+	protected ResponseEntity<Object> handleAuthorizationDeniedException(AuthorizationDeniedException e,
+		WebRequest request) {
+		log.error("UNAUTHORIZED_DOMAIN : {}", e.getMessage(), e);
+		return ResponseEntity.status(ErrorCode.UNAUTHORIZED_DOMAIN.getStatus())
+			.body(ErrorResponse.of(ErrorCode.UNAUTHORIZED_DOMAIN));
+	}
+
 	@Override
 	protected ResponseEntity<Object> handleMethodArgumentNotValid(MethodArgumentNotValidException e,
 		HttpHeaders headers, HttpStatusCode status, WebRequest request) {
@@ -45,4 +54,5 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 		return ResponseEntity.status(ErrorCode.HTTP_MESSAGE_NOT_READABLE.getStatus())
 			.body(ErrorResponse.of(ErrorCode.HTTP_MESSAGE_NOT_READABLE));
 	}
+
 }
