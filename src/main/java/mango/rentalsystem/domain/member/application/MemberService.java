@@ -16,6 +16,7 @@ import mango.rentalsystem.domain.member.dto.response.MemberCreateResponse;
 import mango.rentalsystem.domain.member.dto.response.MemberFindResponse;
 import mango.rentalsystem.global.exception.CustomException;
 import mango.rentalsystem.global.exception.ErrorCode;
+
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -33,33 +34,33 @@ public class MemberService {
 	private final MemberRepository memberRepository;
 	private final CsvUtil csvUtil;
 
-	public MemberCreateResponse createMember(String studentId, MemberCreateRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public MemberCreateResponse createMember(String loginId, MemberCreateRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		Member targetMember = Member.createMember(studentId, passwordEncoder.encode(request.phone()), request.name(),
-			member.getDepartment(), request.phone());
+		Member targetMember = Member.createMember(request.studentId(), passwordEncoder.encode(request.phone()),
+			request.name(), member.getDepartment(), request.phone());
 
 		Member savedMember = memberRepository.save(targetMember);
 		return MemberCreateResponse.from(savedMember);
 	}
 
-	public MemberFindResponse findMyMemberInfo(String studentId) {
-		Member member = memberRepository.findByStudentId(studentId)
-				.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
+	public MemberFindResponse findMyMemberInfo(String loginId) {
+		Member member = memberRepository.findByStudentId(loginId)
+			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 		return MemberFindResponse.from(member);
 	}
 
-	public void updateMyInfo(String studentId, MemberInfoUpdateRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public void updateMyInfo(String loginId, MemberInfoUpdateRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 		member.updateMemberInfo(request.name(), request.phone(), request.absenceStatus());
 	}
 
-	public void updateMyPassword(String studentId, MemberPasswordUpdateRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public void updateMyPassword(String loginId, MemberPasswordUpdateRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 		if (!passwordEncoder.matches(request.currentPassword(), member.getPassword())) {
@@ -69,8 +70,8 @@ public class MemberService {
 		member.updateMemberPassword(passwordEncoder.encode(request.newPassword()));
 	}
 
-	public void updateInfo(String studentId, Long memberId, MemberInfoUpdateRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public void updateInfo(String loginId, Long memberId, MemberInfoUpdateRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 		Member targetMember = memberRepository.findById(memberId)
@@ -81,8 +82,8 @@ public class MemberService {
 		targetMember.updateMemberInfo(request.name(), request.phone(), request.absenceStatus());
 	}
 
-	public void saveMembersFromCsv(String studentId, String filePath) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public void saveMembersFromCsv(String loginId, String filePath) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(ErrorCode.MEMBER_NOT_FOUND));
 
 		List<Member> members = csvUtil.readMembersFromCsv(member, filePath);
@@ -97,8 +98,8 @@ public class MemberService {
 	}
 
 	// 모든 회원 조회
-	public List<MemberFindResponse> findAllMembers(String studentId) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public List<MemberFindResponse> findAllMembers(String loginId) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Department department = member.getDepartment();
@@ -111,8 +112,8 @@ public class MemberService {
 	}
 
 	// 특정 회원 조회
-	public MemberFindResponse findMember(String studentId, Long memberId) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public MemberFindResponse findMember(String loginId, Long memberId) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Member targetMember = memberRepository.findById(memberId)
@@ -124,8 +125,8 @@ public class MemberService {
 	}
 
 	// 특정 회원 삭제
-	public void deleteMember(String studentId, Long memberId) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public void deleteMember(String loginId, Long memberId) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Member targetMember = memberRepository.findById(memberId)

@@ -41,8 +41,8 @@ public class RentalService {
 	private final RentalRepository rentalRepository;
 	private final ItemRepository itemRepository;
 
-	public RentalCreateResponse createRental(String studentId, RentalCreateRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public RentalCreateResponse createRental(String loginId, RentalCreateRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		member.validateRentalBannedDate();
@@ -67,8 +67,8 @@ public class RentalService {
 		return RentalCreateResponse.from(savedRental);
 	}
 
-	public List<RentalFindResponse> findAllRental(String studentId, RentalFindRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public List<RentalFindResponse> findAllRental(String loginId, RentalFindRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Department department = member.getDepartment();
@@ -86,8 +86,8 @@ public class RentalService {
 			.collect(Collectors.toList());
 	}
 
-	public List<RentalFindResponse> findMyRental(String studentId, RentalFindRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public List<RentalFindResponse> findMyRental(String loginId, RentalFindRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		List<Rental> myRentalList;
@@ -103,8 +103,8 @@ public class RentalService {
 			.collect(Collectors.toList());
 	}
 
-	public RentalFindResponse findRental(String studentId, Long rentalId) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public RentalFindResponse findRental(String loginId, Long rentalId) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Rental rental = rentalRepository.findById(rentalId)
@@ -115,8 +115,8 @@ public class RentalService {
 		return RentalFindResponse.from(rental);
 	}
 
-	public void updateRentalStatus(String studentId, Long rentalId, RentalStatusUpdateRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public void updateRentalStatus(String loginId, Long rentalId, RentalStatusUpdateRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		member.getDepartment().validateRentalTime();
@@ -172,8 +172,8 @@ public class RentalService {
 		}
 	}
 
-	public void updateRentalReview(String studentId, Long rentalId, RentalReviewRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public void updateRentalReview(String loginId, Long rentalId, RentalReviewRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Rental rental = rentalRepository.findById(rentalId)
