@@ -4,7 +4,6 @@ import java.time.LocalDateTime;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
 
-import mango.rentalsystem.domain.item.domain.Item;
 import mango.rentalsystem.domain.rental.domain.Rental;
 import mango.rentalsystem.domain.rental.domain.RentalStatus;
 
@@ -23,6 +22,7 @@ public record RentalCreateResponse(
 			rental.getItem().getId(),
 			rental.getRentalStatus(),
 			rental.getRequestDateTime(),
-			rental.getDeadlineDateTime());
+			rental.getDeadlineDateTime()
+		);
 	}
 }

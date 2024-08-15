@@ -18,7 +18,7 @@ import java.util.List;
 public class Category {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "category_id")
 	@NotNull
 	private Long id;
@@ -35,15 +35,11 @@ public class Category {
 	private String description;
 	// description: 22년형 macbook air 14인치
 
-	@OneToMany(mappedBy = "category")
+	@OneToMany(mappedBy = "category", cascade = CascadeType.ALL, orphanRemoval = true)
 	private List<Item> items = new ArrayList<>();
 
 	@Builder(access = AccessLevel.PRIVATE)
-	private	Category(
-		String name,
-		String description,
-		Department department
-		) {
+	private Category(String name, String description, Department department) {
 		this.name = name;
 		this.description = description;
 		this.department = department;

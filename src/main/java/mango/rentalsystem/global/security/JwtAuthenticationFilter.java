@@ -10,7 +10,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -32,27 +31,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 				return;
 			}
 		}
-		String accessToken = getJwtFromRequest(request);
-		try {
-			Authentication authentication = getAuthentication(accessToken);
-			SecurityContextHolder.getContext().setAuthentication(authentication);
-		} catch (ExpiredJwtException e) { // 만료된 토큰
-			response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-			response.getWriter().write("Access token has expired");
-			return;
-		} catch (Exception e) { // 이외 예외 전부 (예외 로직 개선 필요)
-			System.out.println("토큰 인증 실패"); // 예외 로직 개선하면서 삭제
-			return;
-		}
-		filterChain.doFilter(request, response);
-	}
 
-	private String getJwtFromRequest(HttpServletRequest request) {
 		String bearerToken = request.getHeader("Authorization");
-		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
-			return bearerToken.substring(7); // "Bearer ".length() == 7
-		}
-		return null;
+		String accessToken = jwtTokenProvider.getJwtFromBearerToken(bearerToken);
+		jwtTokenProvider.validateToken(accessToken);
+
+		Authentication authentication = getAuthentication(accessToken);
+		SecurityContextHolder.getContext().setAuthentication(authentication);
+
+		filterChain.doFilter(request, response);
 	}
 
 	private Authentication getAuthentication(String accessToken) {

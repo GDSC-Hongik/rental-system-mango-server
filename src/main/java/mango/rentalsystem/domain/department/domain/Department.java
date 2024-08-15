@@ -1,7 +1,10 @@
 package mango.rentalsystem.domain.department.domain;
 
+import static mango.rentalsystem.global.exception.ErrorCode.*;
+
 import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.LocalTime;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -11,6 +14,7 @@ import jakarta.persistence.ElementCollection;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
 import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.MapKeyColumn;
@@ -19,6 +23,7 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import mango.rentalsystem.global.exception.CustomException;
 
 @Entity
 @Getter
@@ -26,7 +31,7 @@ import lombok.NoArgsConstructor;
 public class Department {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "department_id")
 	private Long id;
 
@@ -67,5 +72,13 @@ public class Department {
 
 	public DailyRentalTime getTodayRentalTime() {
 		return this.weeklyRentalTime.get(LocalDate.now().getDayOfWeek());
+	}
+
+	public void validateRentalTime() {
+		DailyRentalTime todayRentalTime = this.getTodayRentalTime();
+		if (LocalTime.now().isBefore(todayRentalTime.getRentalStartTime()) ||
+			LocalTime.now().isAfter(todayRentalTime.getRentalEndTime())) {
+			throw new CustomException(NOT_OPERATING_HOURS);
+		}
 	}
 }

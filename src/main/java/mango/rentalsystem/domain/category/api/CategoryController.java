@@ -2,8 +2,6 @@ package mango.rentalsystem.domain.category.api;
 
 import java.util.List;
 
-import javax.xml.transform.Result;
-
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,14 +15,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
+import mango.rentalsystem.domain.auth.domain.LoginUser;
 import mango.rentalsystem.domain.category.application.CategoryService;
-import mango.rentalsystem.domain.category.domain.Category;
 import mango.rentalsystem.domain.category.dto.request.CategoryCreateRequest;
 import mango.rentalsystem.domain.category.dto.request.CategoryModifyRequest;
 import mango.rentalsystem.domain.category.dto.response.CategoryDetailResponse;
 import mango.rentalsystem.domain.category.dto.response.CategorySummaryResponse;
-
 
 @RestController
 @RequestMapping("/category")
@@ -34,43 +30,42 @@ public class CategoryController {
 	private final CategoryService categoryService;
 
 	// 카테고리 전체 조회
+	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
 	@GetMapping
-	public ResponseEntity<List<CategorySummaryResponse>> getAllCategories() {
-		List<CategorySummaryResponse> response = categoryService.findAll();
-		return ResponseEntity.ok().body(response);
+	public ResponseEntity<List<CategorySummaryResponse>> getAllCategories(@LoginUser String loginId) {
+		return ResponseEntity.ok(categoryService.findAll(loginId));
 	}
 
 	// 카테고리 추가
-	@PreAuthorize("hasRole('ADMIN')")	// ADMIN 검사
+	@PreAuthorize("hasRole('ADMIN')")    // ADMIN 검사
 	@PostMapping
-	public ResponseEntity<Void> createCategory(@Valid @RequestBody CategoryCreateRequest request) {
-		categoryService.createCategory(request);
+	public ResponseEntity<Void> createCategory(@LoginUser String loginId,
+		@Valid @RequestBody CategoryCreateRequest request) {
+		categoryService.createCategory(loginId, request);
 		return ResponseEntity.ok().build();
 	}
 
 	// 특정 카테고리 정보 조회
-	@PreAuthorize("hasRole('ADMIN') or hasRole('MEMBER')")
+	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
 	@GetMapping("/{categoryId}")
-	public CategoryDetailResponse getCategoryDetail(@PathVariable Long categoryId) {
-		Category category = categoryService.getCategoryById(categoryId);
-		return CategoryDetailResponse.from(category);
+	public ResponseEntity<CategoryDetailResponse> getCategoryDetail(@LoginUser String loginId,
+		@PathVariable Long categoryId) {
+		return ResponseEntity.ok(categoryService.getCategoryById(loginId, categoryId));
 	}
 
 	// 특정 카테고리 정보 변경
 	@PreAuthorize("hasRole('ADMIN')")
 	@PatchMapping("/{categoryId}")
-	public ResponseEntity<CategorySummaryResponse> modifyCategory(@Valid @RequestBody CategoryModifyRequest request, @PathVariable Long categoryId) {
-		categoryService.modifyCategory(request, categoryId);
-		CategorySummaryResponse response = categoryService.modifyCategory(request, categoryId);
-		return ResponseEntity.ok(response);
+	public ResponseEntity<CategorySummaryResponse> modifyCategory(@LoginUser String loginId,
+		@Valid @RequestBody CategoryModifyRequest request, @PathVariable Long categoryId) {
+		return ResponseEntity.ok(categoryService.modifyCategory(loginId, request, categoryId));
 	}
 
 	// 특정 카테고리 삭제
-	@PreAuthorize("hasRole('ADMIN')")	// ADMIN 검사
+	@PreAuthorize("hasRole('ADMIN')")    // ADMIN 검사
 	@DeleteMapping("/{categoryId}")
-	public ResponseEntity<Void>deleteCategory(@PathVariable Long categoryId) {
-		categoryService.deleteCategory(categoryId);
+	public ResponseEntity<Void> deleteCategory(@LoginUser String loginId, @PathVariable Long categoryId) {
+		categoryService.deleteCategory(loginId, categoryId);
 		return ResponseEntity.ok().build();
 	}
-
 }

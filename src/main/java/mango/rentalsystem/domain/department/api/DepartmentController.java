@@ -24,24 +24,24 @@ public class DepartmentController {
 	private final DepartmentService departmentService;
 
 	@GetMapping
-	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<DepartmentResponse> getDepartment(@LoginUser String studentId) {
-		return ResponseEntity.ok(departmentService.getDepartment(studentId));
+	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
+	public ResponseEntity<DepartmentResponse> getDepartment(@LoginUser String loginId) {
+		return ResponseEntity.ok(departmentService.getDepartment(loginId));
 	}
 
 	@PutMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Void> updateDepartmentInfo(@LoginUser String studentId,
+	public ResponseEntity<Void> updateDepartmentInfo(@LoginUser String loginId,
 		@Valid @RequestBody DepartmentInfoUpdateRequest request) {
-		departmentService.updateDepartmentInfo(studentId, request);
+		departmentService.updateDepartmentInfo(loginId, request);
 		return ResponseEntity.ok().build();
 	}
 
 	@PutMapping("/rentaltime")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Void> updateDepartmentRentalTime(@LoginUser String studentId,
+	public ResponseEntity<Void> updateDepartmentRentalTime(@LoginUser String loginId,
 		@Valid @RequestBody DepartmentRentalTimeUpdateRequest request) {
-		departmentService.updateDepartmentRentalTime(studentId, request);
+		departmentService.updateDepartmentRentalTime(loginId, request);
 		return ResponseEntity.ok().build();
 	}
 }

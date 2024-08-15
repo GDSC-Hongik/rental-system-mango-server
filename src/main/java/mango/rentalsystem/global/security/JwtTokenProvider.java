@@ -1,5 +1,7 @@
 package mango.rentalsystem.global.security;
 
+import static mango.rentalsystem.global.exception.ErrorCode.*;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.concurrent.TimeUnit;
@@ -8,13 +10,18 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
 import io.jsonwebtoken.Claims;
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Header;
 import io.jsonwebtoken.Jwts;
+import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import io.jsonwebtoken.security.SignatureException;
 import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.member.domain.MemberRole;
+import mango.rentalsystem.global.exception.CustomException;
 import mango.rentalsystem.global.properties.JwtProperties;
 
 @Component
@@ -73,6 +80,34 @@ public class JwtTokenProvider {
 			.build()
 			.parseClaimsJws(token) // 서명 검증 포함
 			.getBody();
+	}
+
+	public void validateToken(String token) {
+		try {
+			final Claims claims = parseToken(token);
+			String tokenType = claims.get("type", String.class);
+			if (tokenType.equals("access") || tokenType.equals("refresh")) {
+				return;
+			}
+			throw new CustomException(WRONG_TYPE_TOKEN);
+		} catch (ExpiredJwtException e) {
+			throw new CustomException(EXPIRED_TOKEN);
+		} catch (UnsupportedJwtException e) {
+			throw new CustomException(UNSUPPORTED_TOKEN);
+		} catch (MalformedJwtException e) {
+			throw new CustomException(WRONG_TYPE_TOKEN);
+		} catch (SignatureException e) {
+			throw new CustomException(WRONG_SIGNATURE_TOKEN);
+		} catch (IllegalArgumentException e) {
+			throw new CustomException(UNKNOWN_TOKEN);
+		}
+	}
+
+	public String getJwtFromBearerToken(String bearerToken) {
+		if (bearerToken != null && bearerToken.startsWith("Bearer ")) {
+			return bearerToken.substring(7); // "Bearer ".length() == 7
+		}
+		return null;
 	}
 
 	private Key getSecretKey() {
