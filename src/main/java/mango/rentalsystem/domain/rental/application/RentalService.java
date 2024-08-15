@@ -71,10 +71,10 @@ public class RentalService {
 		Department department = member.getDepartment();
 
 		List<Rental> allRentalList;
-		List<RentalStatus> rentalStatuses = request.rentalStatuses();
-		if (rentalStatuses == null) {
+		if (request == null) {
 			allRentalList = rentalRepository.findAllByMemberDepartment(department);
 		} else {
+			List<RentalStatus> rentalStatuses = request.rentalStatuses();
 			allRentalList = rentalRepository.findAllByRentalStatusInAndMemberDepartment(rentalStatuses, department);
 		}
 
@@ -88,10 +88,10 @@ public class RentalService {
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		List<Rental> myRentalList;
-		List<RentalStatus> rentalStatuses = request.rentalStatuses();
-		if (rentalStatuses == null) {
+		if (request == null) {
 			myRentalList = rentalRepository.findAllByMember(member);
 		} else {
+			List<RentalStatus> rentalStatuses = request.rentalStatuses();
 			myRentalList = rentalRepository.findAllByRentalStatusInAndMember(rentalStatuses, member);
 		}
 
