@@ -70,6 +70,19 @@ public class Member {
 			.build();
 	}
 
+	public static Member createAdmin(String studentId, String password, String name, Department department,
+		String phone) {
+		return Member.builder()
+			.studentId(studentId)
+			.password(password)
+			.name(name)
+			.role(MemberRole.ROLE_ADMIN)
+			.department(department)
+			.phone(phone)
+			.absenceStatus(false)
+			.build();
+	}
+
 	public void updateMemberInfo(String name, String phone, Boolean absenceStatus) {
 		this.name = name;
 		this.phone = phone;
