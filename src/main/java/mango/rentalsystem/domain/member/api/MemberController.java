@@ -36,72 +36,72 @@ public class MemberController {
 	// 회원 조회
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<MemberFindResponse>> getAllMembers(@LoginUser String studentId) {
-		return ResponseEntity.ok(memberService.findAllMembers(studentId));
+	public ResponseEntity<List<MemberFindResponse>> getAllMembers(@LoginUser String loginId) {
+		return ResponseEntity.ok(memberService.findAllMembers(loginId));
 	}
 
 	// 회원 추가
 	@PostMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<MemberCreateResponse> addMember(@LoginUser String studentId,
+	public ResponseEntity<MemberCreateResponse> addMember(@LoginUser String loginId,
 		@RequestBody MemberCreateRequest request) {
-		return ResponseEntity.ok(memberService.createMember(studentId, request));
+		return ResponseEntity.ok(memberService.createMember(loginId, request));
 	}
 
 	// 특정 회원 정보 조회
-	@GetMapping("/{memberId}")
+	@GetMapping("/{studentId}")
 	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
-	public ResponseEntity<MemberFindResponse> getMember(@LoginUser String studentId, @PathVariable Long memberId) {
-		return ResponseEntity.ok(memberService.findMember(studentId, memberId));
+	public ResponseEntity<MemberFindResponse> getMember(@LoginUser String loginId, @PathVariable String studentId) {
+		return ResponseEntity.ok(memberService.findMember(loginId, studentId));
 	}
 
 	// 특정 회원 정보 수정
-	@PutMapping("/{memberId}")
+	@PutMapping("/{studentId}")
 	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
-	public ResponseEntity<Void> updateMember(@LoginUser String studentId, @PathVariable Long memberId,
+	public ResponseEntity<Void> updateMember(@LoginUser String loginId, @PathVariable String studentId,
 		@RequestBody @Valid MemberInfoUpdateRequest request) {
-		memberService.updateInfo(studentId, memberId, request);
+		memberService.updateInfo(loginId, studentId, request);
 		return ResponseEntity.ok().build();
 	}
 
 	// 특정 회원 정보 삭제
-	@DeleteMapping("/{memberId}")
+	@DeleteMapping("/{studentId}")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Void> deleteMember(@LoginUser String studentId, @PathVariable Long memberId) {
-		memberService.deleteMember(studentId, memberId);
+	public ResponseEntity<Void> deleteMember(@LoginUser String loginId, @PathVariable String studentId) {
+		memberService.deleteMember(loginId, studentId);
 		return ResponseEntity.ok().build();
 	}
 
 	// 맨 처음 웹 실행시 ADMIN이 학생목록을 load해야 함
 	@GetMapping("/load")
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<Void> loadMembers(@LoginUser String studentId, @RequestParam String filePath) {
-		memberService.saveMembersFromCsv(studentId, filePath);
+	public ResponseEntity<Void> loadMembers(@LoginUser String loginId, @RequestParam String filePath) {
+		memberService.saveMembersFromCsv(loginId, filePath);
 		return ResponseEntity.ok().build();
 	}
 
 	// 현재 로그인된 멤버의 정보 조회 (Member 전용)
 	@GetMapping("/myinfo")
 	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
-	public ResponseEntity<MemberFindResponse> getMyInfo(@LoginUser String studentId) {
-		return ResponseEntity.ok(memberService.findMyMemberInfo(studentId));
+	public ResponseEntity<MemberFindResponse> getMyInfo(@LoginUser String loginId) {
+		return ResponseEntity.ok(memberService.findMyMemberInfo(loginId));
 	}
 
 	// 현재 로그인된 멤버의 정보 수정 (Member 전용)
 	@PutMapping("/myinfo")
 	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
-	public ResponseEntity<Void> updateMyInfo(@LoginUser String studentId,
+	public ResponseEntity<Void> updateMyInfo(@LoginUser String loginId,
 		@RequestBody @Valid MemberInfoUpdateRequest request) {
-		memberService.updateMyInfo(studentId, request);
+		memberService.updateMyInfo(loginId, request);
 		return ResponseEntity.ok().build();
 	}
 
 	// 비밀번호 수정
 	@PatchMapping("/myinfo/password")
 	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
-	public ResponseEntity<Void> updateMyPassword(@LoginUser String studentId,
+	public ResponseEntity<Void> updateMyPassword(@LoginUser String loginId,
 		@RequestBody @Valid MemberPasswordUpdateRequest request) {
-		memberService.updateMyPassword(studentId, request);
+		memberService.updateMyPassword(loginId, request);
 		return ResponseEntity.ok().build();
 	}
 }

@@ -21,22 +21,22 @@ public class DepartmentService {
 
 	private final MemberRepository memberRepository;
 
-	public DepartmentResponse getDepartment(String studentId) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public DepartmentResponse getDepartment(String loginId) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		Department department = member.getDepartment();
 		return DepartmentResponse.from(department);
 	}
 
-	public void updateDepartmentInfo(String studentId, DepartmentInfoUpdateRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public void updateDepartmentInfo(String loginId, DepartmentInfoUpdateRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		Department department = member.getDepartment();
 		department.updateDepartmentInfo(request.name(), request.rentalPlace(), request.notice());
 	}
 
-	public void updateDepartmentRentalTime(String studentId, DepartmentRentalTimeUpdateRequest request) {
-		Member member = memberRepository.findByStudentId(studentId)
+	public void updateDepartmentRentalTime(String loginId, DepartmentRentalTimeUpdateRequest request) {
+		Member member = memberRepository.findByStudentId(loginId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 		Department department = member.getDepartment();
 		department.updateWeeklyRentalTime(request.weeklyRentalTime());

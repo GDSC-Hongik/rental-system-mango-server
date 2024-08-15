@@ -32,47 +32,47 @@ public class RentalController {
 
 	@PostMapping
 	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<RentalCreateResponse> createRental(@LoginUser String studentId,
+	public ResponseEntity<RentalCreateResponse> createRental(@LoginUser String loginId,
 		@RequestBody @Valid RentalCreateRequest request) {
-		return ResponseEntity.ok(rentalService.createRental(studentId, request));
+		return ResponseEntity.ok(rentalService.createRental(loginId, request));
 	}
 
 	// 페이지네이션 필요할 수도 있음
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<RentalFindResponse>> getAllRental(@LoginUser String studentId,
+	public ResponseEntity<List<RentalFindResponse>> getAllRental(@LoginUser String loginId,
 		@RequestBody(required = false) RentalFindRequest request) {
-		return ResponseEntity.ok(rentalService.findAllRental(studentId, request));
+		return ResponseEntity.ok(rentalService.findAllRental(loginId, request));
 	}
 
 	// 페이지네이션 필요할 수도 있음
 	@GetMapping("/myrental")
 	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<List<RentalFindResponse>> getMyRental(@LoginUser String studentId,
+	public ResponseEntity<List<RentalFindResponse>> getMyRental(@LoginUser String loginId,
 		@RequestBody(required = false) RentalFindRequest request) {
-		return ResponseEntity.ok(rentalService.findMyRental(studentId, request));
+		return ResponseEntity.ok(rentalService.findMyRental(loginId, request));
 	}
 
 	@GetMapping("/{rentalId}")
 	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
-	public ResponseEntity<RentalFindResponse> getRental(@LoginUser String studentId, @PathVariable Long rentalId) {
-		return ResponseEntity.ok(rentalService.findRental(studentId, rentalId));
+	public ResponseEntity<RentalFindResponse> getRental(@LoginUser String loginId, @PathVariable Long rentalId) {
+		return ResponseEntity.ok(rentalService.findRental(loginId, rentalId));
 	}
 
 	@PatchMapping("/{rentalId}")
 	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')") // role hierarchy 구현하는 게 좋아보임
-	public ResponseEntity<Void> updateRentalStatus(@LoginUser String studentId, @PathVariable Long rentalId,
+	public ResponseEntity<Void> updateRentalStatus(@LoginUser String loginId, @PathVariable Long rentalId,
 		@RequestBody @Valid RentalStatusUpdateRequest request) {
-		rentalService.updateRentalStatus(studentId, rentalId, request);
+		rentalService.updateRentalStatus(loginId, rentalId, request);
 		return ResponseEntity.ok().build();
 	}
 
 	// 리뷰 메서드 필요
 	@PatchMapping("/{rentalId}/review")
 	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<Void> updateRentalReview(@LoginUser String studentId, @PathVariable Long rentalId,
+	public ResponseEntity<Void> updateRentalReview(@LoginUser String loginId, @PathVariable Long rentalId,
 		@RequestBody @Valid RentalReviewRequest request) {
-		rentalService.updateRentalReview(studentId, rentalId, request);
+		rentalService.updateRentalReview(loginId, rentalId, request);
 		return ResponseEntity.ok().build();
 	}
 }
