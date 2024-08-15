@@ -15,6 +15,7 @@ import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import lombok.RequiredArgsConstructor;
+import mango.rentalsystem.global.security.CustomAccessDeniedHandler;
 import mango.rentalsystem.global.security.JwtAuthenticationFilter;
 import mango.rentalsystem.global.security.JwtExceptionFilter;
 
@@ -26,6 +27,7 @@ public class WebSecurityConfig {
 
 	private final JwtAuthenticationFilter jwtAuthenticationFilter;
 	private final JwtExceptionFilter jwtExceptionFilter;
+	private final CustomAccessDeniedHandler customAccessDeniedHandler;
 
 	@Bean
 	public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
@@ -35,6 +37,8 @@ public class WebSecurityConfig {
 			.cors(corsConfigurer -> corsConfigurer.configurationSource(corsConfigurationSource()))
 			.sessionManagement(sessionManagementConfigurer -> sessionManagementConfigurer.sessionCreationPolicy(
 				SessionCreationPolicy.STATELESS))
+			.exceptionHandling(exceptionHandlingConfigurer ->
+				exceptionHandlingConfigurer.accessDeniedHandler(customAccessDeniedHandler))
 			.authorizeHttpRequests(authorize -> authorize.anyRequest().permitAll()) // @PreAuthorization 사용.
 			.addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
 			.addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)

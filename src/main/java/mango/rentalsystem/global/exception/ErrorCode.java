@@ -27,6 +27,7 @@ public enum ErrorCode {
 	UNAUTHORIZED_ITEM(HttpStatus.UNAUTHORIZED, "이 물품에 접근할 권한이 없습니다."),
 	UNAUTHORIZED_RENTAL(HttpStatus.UNAUTHORIZED, "이 대여에 접근할 권한이 없습니다."),
 	UNAUTHORIZED_MEMBER(HttpStatus.UNAUTHORIZED, "이 회원에 접근할 권한이 없습니다."),
+	UNAUTHORIZED_DOMAIN(HttpStatus.UNAUTHORIZED, "이 도메인에 접근할 권한이 없습니다."),
 
 	// 403 FORBIDDEN
 	NOT_OPERATING_HOURS(HttpStatus.FORBIDDEN, "대여 서비스 운영 시간이 아닙니다."),
