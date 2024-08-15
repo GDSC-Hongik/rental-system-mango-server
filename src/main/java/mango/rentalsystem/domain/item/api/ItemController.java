@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import mango.rentalsystem.domain.auth.domain.LoginUser;
 import mango.rentalsystem.domain.item.application.ItemService;
 import mango.rentalsystem.domain.item.domain.Item;
 import mango.rentalsystem.domain.item.dto.request.ItemCreateRequest;
@@ -29,33 +30,31 @@ public class ItemController {
 	// 아이템 추가
 	@PreAuthorize("hasRole('ADMIN')")	// ADMIN 검사
 	@PostMapping
-	public ResponseEntity<Void> createItem(@Valid @RequestBody ItemCreateRequest request) {
-		itemService.createItem(request);
+	public ResponseEntity<Void> createItem(@LoginUser String loginId, @Valid @RequestBody ItemCreateRequest request) {
+		itemService.createItem(loginId, request);
 		return ResponseEntity.ok().build();
 	}
 
 	// 특정 물품 정보 조회
 	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
 	@GetMapping("/{itemId}")
-	public ItemDetailResponse getItemDetail(@PathVariable Long itemId){
-		Item item = itemService.getItemById(itemId);
-		return ItemDetailResponse.from(item);
+	public ResponseEntity<ItemDetailResponse> getItemDetail(@LoginUser String loginId, @PathVariable Long itemId){
+		return ResponseEntity.ok(itemService.getItemById(loginId, itemId));
 	}
 
 	// 특정 물품 정보 변경
 	@PreAuthorize("hasRole('ADMIN')")
 	@PatchMapping("/{itemId}")
-	public ResponseEntity<ItemDetailResponse> modifyItem(@Valid @RequestBody ItemModifyRequest request, @PathVariable Long itemId) {
-		itemService.modifyItem(request, itemId);
-		ItemDetailResponse response = itemService.modifyItem(request, itemId);
-		return ResponseEntity.ok(response);
+	public ResponseEntity<ItemDetailResponse> modifyItem(@LoginUser String loginId,
+		@Valid @RequestBody ItemModifyRequest request, @PathVariable Long itemId) {
+		return ResponseEntity.ok(itemService.modifyItem(loginId, request, itemId));
 	}
 
 	// 특정 물품 삭제
 	@PreAuthorize("hasRole('ADMIN')")
 	@DeleteMapping("/{itemId}")
-	public ResponseEntity<Void>deleteItem(@PathVariable Long itemId) {
-		itemService.deleteItem(itemId);
+	public ResponseEntity<Void> deleteItem(@LoginUser String loginId, @PathVariable Long itemId) {
+		itemService.deleteItem(loginId, itemId);
 		return ResponseEntity.ok().build();
 	}
 }
