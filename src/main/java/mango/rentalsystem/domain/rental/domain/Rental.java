@@ -19,7 +19,7 @@ import mango.rentalsystem.domain.member.domain.Member;
 public class Rental {
 
 	@Id
-	@GeneratedValue
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "rental_id")
 	private Long id; //pk
 
