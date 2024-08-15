@@ -17,6 +17,7 @@ import lombok.RequiredArgsConstructor;
 import mango.rentalsystem.domain.auth.domain.LoginUser;
 import mango.rentalsystem.domain.rental.application.RentalService;
 import mango.rentalsystem.domain.rental.dto.request.RentalCreateRequest;
+import mango.rentalsystem.domain.rental.dto.request.RentalFindRequest;
 import mango.rentalsystem.domain.rental.dto.request.RentalReviewRequest;
 import mango.rentalsystem.domain.rental.dto.request.RentalStatusUpdateRequest;
 import mango.rentalsystem.domain.rental.dto.response.RentalCreateResponse;
@@ -32,22 +33,24 @@ public class RentalController {
 	@PostMapping
 	@PreAuthorize("hasRole('MEMBER')")
 	public ResponseEntity<RentalCreateResponse> createRental(@LoginUser String studentId,
-		@RequestBody @Valid RentalCreateRequest rentalRequest) {
-		return ResponseEntity.ok(rentalService.createRental(studentId, rentalRequest));
+		@RequestBody @Valid RentalCreateRequest request) {
+		return ResponseEntity.ok(rentalService.createRental(studentId, request));
 	}
 
 	// 페이지네이션 필요할 수도 있음
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
-	public ResponseEntity<List<RentalFindResponse>> getAllRental(@LoginUser String studentId) {
-		return ResponseEntity.ok(rentalService.findAllRental(studentId));
+	public ResponseEntity<List<RentalFindResponse>> getAllRental(@LoginUser String studentId,
+		@RequestBody(required = false) RentalFindRequest request) {
+		return ResponseEntity.ok(rentalService.findAllRental(studentId, request));
 	}
 
 	// 페이지네이션 필요할 수도 있음
 	@GetMapping("/myrental")
 	@PreAuthorize("hasRole('MEMBER')")
-	public ResponseEntity<List<RentalFindResponse>> getMyRental(@LoginUser String studentId) {
-		return ResponseEntity.ok(rentalService.findMyRental(studentId));
+	public ResponseEntity<List<RentalFindResponse>> getMyRental(@LoginUser String studentId,
+		@RequestBody(required = false) RentalFindRequest request) {
+		return ResponseEntity.ok(rentalService.findMyRental(studentId, request));
 	}
 
 	@GetMapping("/{rentalId}")

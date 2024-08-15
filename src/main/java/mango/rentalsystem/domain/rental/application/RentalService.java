@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
@@ -24,6 +25,7 @@ import mango.rentalsystem.domain.rental.dao.RentalRepository;
 import mango.rentalsystem.domain.rental.domain.Rental;
 import mango.rentalsystem.domain.rental.domain.RentalStatus;
 import mango.rentalsystem.domain.rental.dto.request.RentalCreateRequest;
+import mango.rentalsystem.domain.rental.dto.request.RentalFindRequest;
 import mango.rentalsystem.domain.rental.dto.request.RentalReviewRequest;
 import mango.rentalsystem.domain.rental.dto.request.RentalStatusUpdateRequest;
 import mango.rentalsystem.domain.rental.dto.response.RentalCreateResponse;
@@ -65,32 +67,40 @@ public class RentalService {
 		return RentalCreateResponse.from(savedRental);
 	}
 
-	public List<RentalFindResponse> findAllRental(String studentId) {
+	public List<RentalFindResponse> findAllRental(String studentId, RentalFindRequest request) {
 		Member member = memberRepository.findByStudentId(studentId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
 		Department department = member.getDepartment();
 
-		List<Rental> allRentalList = rentalRepository.findAllByMemberDepartment(department);
-
-		List<RentalFindResponse> response = new ArrayList<>();
-		for (Rental rental : allRentalList) {
-			response.add(RentalFindResponse.from(rental));
+		List<Rental> allRentalList;
+		List<RentalStatus> rentalStatuses = request.rentalStatuses();
+		if (rentalStatuses == null) {
+			allRentalList = rentalRepository.findAllByMemberDepartment(department);
+		} else {
+			allRentalList = rentalRepository.findAllByRentalStatusInAndMemberDepartment(rentalStatuses, department);
 		}
-		return response;
+
+		return allRentalList.stream()
+			.map(RentalFindResponse::from)
+			.collect(Collectors.toList());
 	}
 
-	public List<RentalFindResponse> findMyRental(String studentId) {
+	public List<RentalFindResponse> findMyRental(String studentId, RentalFindRequest request) {
 		Member member = memberRepository.findByStudentId(studentId)
 			.orElseThrow(() -> new CustomException(MEMBER_NOT_FOUND));
 
-		List<Rental> myRentalList = rentalRepository.findAllByMember(member);
-
-		List<RentalFindResponse> response = new ArrayList<>();
-		for (Rental rental : myRentalList) {
-			response.add(RentalFindResponse.from(rental));
+		List<Rental> myRentalList;
+		List<RentalStatus> rentalStatuses = request.rentalStatuses();
+		if (rentalStatuses == null) {
+			myRentalList = rentalRepository.findAllByMember(member);
+		} else {
+			myRentalList = rentalRepository.findAllByRentalStatusInAndMember(rentalStatuses, member);
 		}
-		return response;
+
+		return myRentalList.stream()
+			.map(RentalFindResponse::from)
+			.collect(Collectors.toList());
 	}
 
 	public RentalFindResponse findRental(String studentId, Long rentalId) {
