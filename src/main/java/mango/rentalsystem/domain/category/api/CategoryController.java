@@ -34,6 +34,7 @@ public class CategoryController {
 	private final CategoryService categoryService;
 
 	// 카테고리 전체 조회
+	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
 	@GetMapping
 	public ResponseEntity<List<CategorySummaryResponse>> getAllCategories() {
 		List<CategorySummaryResponse> response = categoryService.findAll();
@@ -49,7 +50,7 @@ public class CategoryController {
 	}
 
 	// 특정 카테고리 정보 조회
-	@PreAuthorize("hasRole('ADMIN') or hasRole('MEMBER')")
+	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
 	@GetMapping("/{categoryId}")
 	public CategoryDetailResponse getCategoryDetail(@PathVariable Long categoryId) {
 		Category category = categoryService.getCategoryById(categoryId);

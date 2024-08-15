@@ -35,7 +35,7 @@ public class ItemController {
 	}
 
 	// 특정 물품 정보 조회
-	@PreAuthorize("hasRole('ADMIN') or hasRole('MEMBER')")
+	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
 	@GetMapping("/{itemId}")
 	public ItemDetailResponse getItemDetail(@PathVariable Long itemId){
 		Item item = itemService.getItemById(itemId);

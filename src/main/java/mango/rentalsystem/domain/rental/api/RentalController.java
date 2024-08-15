@@ -30,6 +30,7 @@ public class RentalController {
 
 	private final RentalService rentalService;
 
+	// 대여 생성
 	@PostMapping
 	@PreAuthorize("hasRole('MEMBER')")
 	public ResponseEntity<RentalCreateResponse> createRental(@LoginUser String loginId,
@@ -37,7 +38,7 @@ public class RentalController {
 		return ResponseEntity.ok(rentalService.createRental(loginId, request));
 	}
 
-	// 페이지네이션 필요할 수도 있음
+	// 대여 전체 조회
 	@GetMapping
 	@PreAuthorize("hasRole('ADMIN')")
 	public ResponseEntity<List<RentalFindResponse>> getAllRental(@LoginUser String loginId,
@@ -45,7 +46,7 @@ public class RentalController {
 		return ResponseEntity.ok(rentalService.findAllRental(loginId, request));
 	}
 
-	// 페이지네이션 필요할 수도 있음
+	// 내 대여 전체 조회
 	@GetMapping("/myrental")
 	@PreAuthorize("hasRole('MEMBER')")
 	public ResponseEntity<List<RentalFindResponse>> getMyRental(@LoginUser String loginId,
@@ -53,14 +54,16 @@ public class RentalController {
 		return ResponseEntity.ok(rentalService.findMyRental(loginId, request));
 	}
 
+	// 대여 단건 조회
 	@GetMapping("/{rentalId}")
-	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')")
+	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
 	public ResponseEntity<RentalFindResponse> getRental(@LoginUser String loginId, @PathVariable Long rentalId) {
 		return ResponseEntity.ok(rentalService.findRental(loginId, rentalId));
 	}
 
+	// 대여 상태 변경
 	@PatchMapping("/{rentalId}")
-	@PreAuthorize("hasRole('MEMBER') or hasRole('ADMIN')") // role hierarchy 구현하는 게 좋아보임
+	@PreAuthorize("hasAnyRole('MEMBER', 'ADMIN')")
 	public ResponseEntity<Void> updateRentalStatus(@LoginUser String loginId, @PathVariable Long rentalId,
 		@RequestBody @Valid RentalStatusUpdateRequest request) {
 		rentalService.updateRentalStatus(loginId, rentalId, request);
