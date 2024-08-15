@@ -91,6 +91,10 @@ public class InitDb {
 			Item itemB = Item.create(categoryComputerA);
 			Item itemC = Item.create(categoryComputerB);
 			Item itemD = Item.create(categoryComputerB);
+			em.persist(itemA);
+			em.persist(itemB);
+			em.persist(itemC);
+			em.persist(itemD);
 
 			// rentalInit
 		}
