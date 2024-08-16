@@ -6,9 +6,9 @@ spring:
   #    driver-class-name: org.h2.Driver
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://172.17.0.3:3306/login?serverTimezone=Asia/Seoul
+    url: jdbc:mysql://localhost:3306/login?serverTimezone=Asia/Seoul
     username: root
-    password: 0000
+    password: 6570
 
   jpa:
     hibernate:
