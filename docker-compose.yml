@@ -17,7 +17,7 @@ services:
       MYSQL_DATABASE: rental
       MYSQL_ROOT_PASSWORD: 0000
     volumes:
-      - ./db:/var/lib/mysql
+      - db:/var/lib/mysql
     ports:
       - "3306:3306"
     networks:
