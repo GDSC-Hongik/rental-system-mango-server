@@ -35,6 +35,10 @@ public class AuthService {
 			throw new CustomException(INVALID_PASSWORD);
 		}
 
+		if (redisTemplate.hasKey(studentId)) {
+			redisTemplate.delete(studentId);
+		}
+
 		String accessToken = jwtTokenProvider.createAccessToken(studentId, member.getRole());
 		String refreshToken = jwtTokenProvider.createRefreshToken(studentId);
 
